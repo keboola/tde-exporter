@@ -32,9 +32,9 @@ def main(args):
     inPathPrefix = args.dataDir + '/in/tables/'
     outPathPrefix = args.dataDir + '/out/files/'
     #print inTables.values()
-    inFilesPaths = [ t  for t in inTables.values()]
+    inFilesPaths = inTables #[ t  for t in inTables.values()]
     for table in inFilesPaths:
-        inFilePath = inPathPrefix + table['destination']
+        inFilePath = inPathPrefix + table['source']
         outFileName = table['source'] + '.tde'
         outFilePath = outPathPrefix + outFileName
         convert2tde(inFilePath, outFilePath)
