@@ -10,7 +10,7 @@ RUN pip install PyYaml
 
 # prepare the container
 WORKDIR /home
-RUN git clone https://github.com/keboola/docker-tde-eporter.git ./
+RUN git clone https://github.com/keboola/docker-tde-exporter.git ./
 WORKDIR libs
 RUN tar xvzf TDE-API-Python-Linux-64Bit.gz
 WORKDIR DataExtract-8300.15.0308.1149
