@@ -17,11 +17,12 @@ def convert2tde(inFilePath, outFilePath):
 
 def createManifest(outFilePath, outFileName):
     manifest = {
-        'name': outFileName,
+        #'name': outFileName,
         'is_permanent': True,
         'is_public': False,
         'tags': ['table-export', 'tde']
     }
+    print "writing manifest"
     with open(outFilePath + '.manifest', 'w') as manifestFile:
         yaml.dump(manifest, manifestFile)
 
@@ -46,3 +47,4 @@ if __name__ == '__main__':
     argparser.add_argument('-d', '--data', dest='dataDir')
     args = argparser.parse_args()
     main(args)
+    print "FINISHED"
