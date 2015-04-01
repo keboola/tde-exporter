@@ -13,11 +13,11 @@ def debug(msg):
     print msg + '\n\n'
 
 
-def convert2tde(inFilePath, outFilePath):
+def convert2tde(inFilePath, outFilePath, typedefs):
     debug( "converting" +  inFilePath)
     csvReader = csv.reader(open(inFilePath, 'rb'),
                            delimiter = csvDelimiter, quotechar = csvQuoteChar)
-    csv2tde.convert(csvReader, outFilePath)
+    csv2tde.convert(csvReader, outFilePath, typedefs)
 
 def getParameters(config, path):
     try:
@@ -75,7 +75,8 @@ def main(args):
         inFilePath = inPathPrefix + fileName
         outFileName = table['source'] + '.tde'
         outFilePath = outPathPrefix + outFileName
-        convert2tde(inFilePath, outFilePath)
+        typedefs = getParameters(config, ['typedefs', table['source']])
+        convert2tde(inFilePath, outFilePath, typedefs or {})
         tags = getParameters(config,['tags'])
         createManifest(outFilePath, outFileName, tags or [])
 
