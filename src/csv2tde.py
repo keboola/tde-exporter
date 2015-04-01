@@ -21,17 +21,12 @@ from dataextract import *
 
 # Define type maps
 schemaIniTypeMap = {
-    'Bit' :     Type.BOOLEAN,
-    'Byte':     Type.INTEGER,
-    'Short':    Type.INTEGER,
-    'Long':     Type.INTEGER,
-    'Integer':  Type.INTEGER,
-    'Single':   Type.DOUBLE,
-    'Double':   Type.DOUBLE,
-    'Date':     Type.DATE,
-    'DateTime': Type.DATETIME,
-    'Text':     Type.UNICODE_STRING,
-    'Memo':     Type.UNICODE_STRING
+    'boolean':  Type.BOOLEAN,
+    'number':   Type.INTEGER,
+    'decimal':  Type.DOUBLE,
+    'date':     Type.DATE,
+    'datetime': Type.DATETIME,
+    'string':   Type.UNICODE_STRING,
 }
 
 def setDate(row, colNo, value) :
