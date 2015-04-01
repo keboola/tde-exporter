@@ -41,9 +41,30 @@ def createManifest(outFilePath, outFileName, tags):
 def loadConfigFile(dataDir):
     return yaml.load(open(dataDir + '/config.yml', 'r'))
 
+def checkConfig(config, inTables):
+    if not inTables:
+        print 'No input tables specified.'
+        return false
+    sources = map(lambda t: t['source'], inTables)
+    typedefs = getParameters(config, ['typedefs'])
+    if not typedefs:
+        return true
+    sources = set(sources)
+    typedefs = set(typedefs.keys())
+    result = typedefs.issubset(sources)
+    def setstr(s):
+        return ", ".join(str(i) for i in s)
+
+    if not result:
+        print "parameter typedefs contains not existing source, got input sources:", setstr(sources), "and got typedefs sources:", setstr(typedefs)
+    return result
+
+
 def main(args):
     config = loadConfigFile(args.dataDir)
     inTables = config['storage']['input']['tables']
+    if not checkConfig(config, inTables):
+        exit(1)
     inPathPrefix = args.dataDir + '/in/tables/'
     outPathPrefix = args.dataDir + '/out/files/'
     inFilesPaths = inTables
