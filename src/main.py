@@ -6,6 +6,8 @@ import csv
 
 csvDelimiter = ','
 csvQuoteChar = '"'
+defaultTags = ['table-export', 'tde']
+
 
 def debug(msg):
     print msg + '\n\n'
@@ -21,7 +23,6 @@ def convert2tde(inFilePath, outFilePath):
 
 def createManifest(outFilePath, outFileName):
     manifest = {
-        #'name': outFileName,
         'is_permanent': True,
         'is_public': False,
         'tags': ['table-export', 'tde']

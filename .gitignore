@@ -1,3 +1,4 @@
 /.DS_Store
 /docker-ignored/
 /src/csv2tde.pyc
+/sampleconfig/
