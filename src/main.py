@@ -19,32 +19,44 @@ def convert2tde(inFilePath, outFilePath):
                            delimiter = csvDelimiter, quotechar = csvQuoteChar)
     csv2tde.convert(csvReader, outFilePath)
 
+def getParameters(config, path):
+    try:
+        return reduce(lambda d, k: d[k], ['parameters'] + path, config)
+    except:
+        return None
 
 
-def createManifest(outFilePath, outFileName):
+def createManifest(outFilePath, outFileName, tags):
+    resultTags = defaultTags + tags
     manifest = {
         'is_permanent': True,
         'is_public': False,
-        'tags': ['table-export', 'tde']
+        'tags': resultTags
     }
+    print 'tags ', resultTags
     debug("writing manifest " + outFileName)
     with open(outFilePath + '.manifest', 'w') as manifestFile:
         yaml.dump(manifest, manifestFile)
 
+def loadConfigFile(dataDir):
+    return yaml.load(open(dataDir + '/config.yml', 'r'))
 
 def main(args):
-    config = yaml.load(open(args.dataDir + '/config.yml', 'r'))
+    config = loadConfigFile(args.dataDir)
     inTables = config['storage']['input']['tables']
     inPathPrefix = args.dataDir + '/in/tables/'
     outPathPrefix = args.dataDir + '/out/files/'
-    #print inTables.values()
-    inFilesPaths = inTables #[ t  for t in inTables.values()]
+    inFilesPaths = inTables
     for table in inFilesPaths:
-        inFilePath = inPathPrefix + table['source']
+        fileName = table['source']
+        if 'destination' in table:
+            fileName = table['destination']
+        inFilePath = inPathPrefix + fileName
         outFileName = table['source'] + '.tde'
         outFilePath = outPathPrefix + outFileName
         convert2tde(inFilePath, outFilePath)
-        createManifest(outFilePath, outFileName)
+        tags = getParameters(config,['tags'])
+        createManifest(outFilePath, outFileName, tags or [])
 
 
 if __name__ == '__main__':
