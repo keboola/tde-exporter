@@ -41,7 +41,8 @@ def createManifest(outFilePath, outFileName, tags):
 def loadConfigFile(dataDir):
     return yaml.load(open(dataDir + '/config.yml', 'r'))
 
-def checkConfig(config, inTables):
+def checkConfig(config):
+    inTables = config['storage']['input']['tables']
     result = True
     # input mapping specified?
     if not inTables:
@@ -68,14 +69,14 @@ def checkConfig(config, inTables):
             for column in typedefs[source].values():
                 if column['type'].lower() not in csv2tde.schemaIniTypeMap:
                     result = False
-                    print 'Unsupported column data type(',column['type'],') for ', source
+                    print 'Unsupported column data type(',column['type'],') for', source
     return result
 
 
 def main(args):
     config = loadConfigFile(args.dataDir)
     inTables = config['storage']['input']['tables']
-    if not checkConfig(config, inTables):
+    if not checkConfig(config):
         exit(1)
     inPathPrefix = args.dataDir + '/in/tables/'
     outPathPrefix = args.dataDir + '/out/files/'
