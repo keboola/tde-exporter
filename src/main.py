@@ -42,21 +42,33 @@ def loadConfigFile(dataDir):
     return yaml.load(open(dataDir + '/config.yml', 'r'))
 
 def checkConfig(config, inTables):
+    result = True
+    # input mapping specified?
     if not inTables:
         print 'No input tables specified.'
-        return false
+        return False
     sources = map(lambda t: t['source'], inTables)
+    #if no typedefs specified we leave with true
     typedefs = getParameters(config, ['typedefs'])
     if not typedefs:
-        return true
+        return True
     sources = set(sources)
     typedefs = set(typedefs.keys())
-    result = typedefs.issubset(sources)
     def setstr(s):
         return ", ".join(str(i) for i in s)
-
+    #if some typedefs does not exists in input mapping sources
+    result = typedefs.issubset(sources)
     if not result:
         print "parameter typedefs contains not existing source, got input sources:", setstr(sources), "and got typedefs sources:", setstr(typedefs)
+
+    #columns types must be valid if specified
+    typedefs = getParameters(config, ['typedefs'])
+    for source in sources:
+        if source in typedefs:
+            for column in typedefs[source].values():
+                if column['type'].lower() not in csv2tde.schemaIniTypeMap:
+                    result = False
+                    print 'Unsupported column data type(',column['type'],') for ', source
     return result
 
 

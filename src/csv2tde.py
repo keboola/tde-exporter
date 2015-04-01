@@ -61,7 +61,7 @@ def convert(csvReader, tdeFile, typedefs) :
 
     def getColumnType(colName):
         if colName in typedefs:
-            return schemaIniTypeMap[typedefs[colName]['type']]
+            return schemaIniTypeMap[typedefs[colName]['type'].lower()]
         else:
             return Type.UNICODE_STRING
 
