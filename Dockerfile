@@ -17,6 +17,6 @@ RUN tar xvzf TDE-API-Python-Linux-64Bit.gz
 WORKDIR DataExtract-8300.15.0308.1149
 RUN python setup.py build
 RUN python setup.py install
-WORKDIR /src
+WORKDIR /home
 RUN py.test
 ENTRYPOINT python ./src/main.py --data=/data
