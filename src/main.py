@@ -7,8 +7,12 @@ import csv
 csvDelimiter = ','
 csvQuoteChar = '"'
 
+def debug(msg):
+    print msg + '\n\n'
+
+
 def convert2tde(inFilePath, outFilePath):
-    print "converting", inFilePath
+    debug( "converting" +  inFilePath)
     csvReader = csv.reader(open(inFilePath, 'rb'),
                            delimiter = csvDelimiter, quotechar = csvQuoteChar)
     csv2tde.convert(csvReader, outFilePath)
@@ -22,7 +26,7 @@ def createManifest(outFilePath, outFileName):
         'is_public': False,
         'tags': ['table-export', 'tde']
     }
-    print "writing manifest"
+    debug("writing manifest " + outFileName)
     with open(outFilePath + '.manifest', 'w') as manifestFile:
         yaml.dump(manifest, manifestFile)
 
@@ -47,4 +51,4 @@ if __name__ == '__main__':
     argparser.add_argument('-d', '--data', dest='dataDir')
     args = argparser.parse_args()
     main(args)
-    print "FINISHED"
+    debug("FINISHED")
