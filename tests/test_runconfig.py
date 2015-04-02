@@ -5,6 +5,7 @@ import pytest
 def test_answer():
     assert 1 == 1
 
+## PREPARE CONFIG DATA
 def tags():
     t = {'tags':['1','2']}
     return t
@@ -24,6 +25,36 @@ def tagsAndTypes(sourceName):
     a.update(typedefs(sourceName))
     return a
 
+## TEST INVALID CONFIG, SHOULD FAIL
+@pytest.fixture(params=[typedefs('test'), tagsAndTypes('test')])
+def invalidConfig(request):
+    config = { 'storage' :
+        { 'input':{
+            'tables': [{'source':'blabla'}]
+        }
+      },
+               'parameters':request.param
+    }
+    return config
+
+
+def test_configInvalid(invalidConfig):
+    assert src.checkConfig(invalidConfig) == False
+
+@pytest.fixture(params=[{}, []])
+def emptyInput(request):
+    config = { 'storage' :
+        { 'input':{
+            'tables': request.param
+        }
+      },
+    }
+    return config
+
+def test_emptyInput(emptyInput):
+    assert src.checkConfig(emptyInput) == False
+
+## TEST VALID CONFIG, SHOULD PASS
 @pytest.fixture(params=[tags(), typedefs('test'), tagsAndTypes('test')])
 def validConfig(request):
     config = { 'storage' :
