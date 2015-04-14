@@ -51,6 +51,16 @@ def emptyInput(request):
     }
     return config
 
+#test empty parameters = should pass
+def test_validEmptyInput():
+    config = { 'storage' :
+        { 'input':{
+            'tables': [{'source':'blabla'}]
+        }
+      },
+    }
+    assert src.checkConfig(config) == True
+
 def test_emptyInput(emptyInput):
     assert src.checkConfig(emptyInput) == False
 
