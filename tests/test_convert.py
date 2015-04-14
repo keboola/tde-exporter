@@ -25,6 +25,30 @@ def test_answer():
     assert 1 == 1
 
 
+def test_customDateFormat(tmpdir):
+    inFilePath = tmpdir.mkdir("in").join("customdate.csv")
+    inFilePath = str(inFilePath.realpath())
+    outDir = tmpdir.mkdir("out")
+    outFilePath = outDir.join("customdate.csv.tde")
+    outFilePath = str(outFilePath.realpath())
+    data = [['testcolumn']]
+    testFormat = "%H:%M %d.%m.%Y"
+    for rowIdx in range(0, testCsvLinesNumber):
+        value = strTimeProp("00:00 1.1.2015","00:00 1.1.1960", testFormat, random.random())
+        data.append([value])
+    with open(inFilePath, 'w') as inFile:
+        csvFile = csv.writer(inFile, delimiter=',')
+        csvFile.writerows(data)
+    typedefs = {'testcolumn':{'type':'datetime', 'format': testFormat}}
+    src.convert2tde(inFilePath, outFilePath, typedefs)
+    outSize = os.path.getsize(outFilePath)
+    assert outSize > 0
+
+
+
+
+
+
 # should pass
 def test_convertOK(tmpdir):
     print "TMP DIR ", tmpdir

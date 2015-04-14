@@ -29,25 +29,30 @@ schemaIniTypeMap = {
     'string':   Type.UNICODE_STRING,
 }
 
-def setDate(row, colNo, value) :
-        d = datetime.datetime.strptime(value, "%Y-%m-%d")
+def setDate(row, colNo, value, colDef) :
+        format = "%Y-%m-%d"
+        if 'format' in colDef:
+                format = colDef['format']
+        d = datetime.datetime.strptime(value, format)
         row.setDate( colNo, d.year, d.month, d.day )
 
-def setDateTime(row, colNo, value) :
+def setDateTime(row, colNo, value, colDef) :
+        format = "%Y-%m-%d %H:%M:%S"
         if( value.find(".") != -1) :
-                d = datetime.datetime.strptime(value, "%Y-%m-%d %H:%M:%S.%f")
-        else :
-                d = datetime.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+                format = "%Y-%m-%d %H:%M:%S.%f"
+        if 'format' in colDef:
+                format = colDef['format']
+        d = datetime.datetime.strptime(value, format)
         row.setDateTime( colNo, d.year, d.month, d.day, d.hour, d.minute, d.second, d.microsecond/100 )
 
 fieldSetterMap = {
-  Type.BOOLEAN:        lambda row, colNo, value: row.setBoolean( colNo, value.lower() == "true" ),
-  Type.INTEGER:        lambda row, colNo, value: row.setInteger( colNo, int(value) ),
-  Type.DOUBLE:         lambda row, colNo, value: row.setDouble( colNo, float(value) ),
-  Type.UNICODE_STRING: lambda row, colNo, value: row.setString( colNo, value ),
-  Type.CHAR_STRING:    lambda row, colNo, value: row.setCharString( colNo, value ),
-  Type.DATE:           lambda row, colNo, value: setDate(row, colNo, value),
-  Type.DATETIME:       lambda row, colNo, value: setDateTime( row, colNo, value )
+        Type.BOOLEAN:        lambda row, colNo, value, colDef: row.setBoolean( colNo, value.lower() == "true" ),
+        Type.INTEGER:        lambda row, colNo, value, colDef: row.setInteger( colNo, int(value) ),
+        Type.DOUBLE:         lambda row, colNo, value, colDef: row.setDouble( colNo, float(value) ),
+        Type.UNICODE_STRING: lambda row, colNo, value, colDef: row.setString( colNo, value ),
+        Type.CHAR_STRING:    lambda row, colNo, value, colDef: row.setCharString( colNo, value ),
+        Type.DATE:           lambda row, colNo, value, colDef: setDate(row, colNo, value, colDef),
+        Type.DATETIME:       lambda row, colNo, value, colDef: setDateTime( row, colNo, value, colDef )
 }
 def convert(csvReader, tdeFile, typedefs) :
     # Start stopwatch
@@ -57,7 +62,14 @@ def convert(csvReader, tdeFile, typedefs) :
     hasHeader = True
     colNames = [] #typedefs.keys()
     colTypes = []
+    colDefs = [] #contains definition object for each column
+
     locale.setlocale(locale.LC_ALL, '')
+    def getColumnDefinition(colName):
+        if colName in typedefs:
+            return typedefs[colName]
+        else:
+            return {'type': Type.UNICODE_STRING}
 
     def getColumnType(colName):
         if colName in typedefs:
@@ -81,6 +93,7 @@ def convert(csvReader, tdeFile, typedefs) :
             if line:
                 # append with empty columns so we have the same number of columns as the header row
                 while len(colNames) < len(line):
+                    colDefs.append(None)
                     colNames.append(None)
                     colTypes.append(Type.UNICODE_STRING)
                 # write in the column names from the header row
@@ -89,6 +102,9 @@ def convert(csvReader, tdeFile, typedefs) :
                     colNames[colNo] = colName
                     #print "coltype for ", colName, 'is ', getColumnType(colName)
                     colTypes[colNo] = getColumnType(colName)
+                    colDefs[colNo] = getColumnDefinition(colName)
+
+
                     colNo += 1
 
             # for any unnamed column, provide a default
@@ -120,7 +136,7 @@ def convert(csvReader, tdeFile, typedefs) :
                 if( colTypes[colNo] != Type.UNICODE_STRING and field == "" ) :
                     row.setNull( colNo )
                 else :
-                    fieldSetterMap[colTypes[colNo]](row, colNo, field);
+                    fieldSetterMap[colTypes[colNo]](row, colNo, field, colDefs[colNo]);
                 colNo += 1
             table.insert(row)
 
