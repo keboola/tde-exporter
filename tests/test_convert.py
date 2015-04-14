@@ -44,8 +44,27 @@ def test_customDateFormat(tmpdir):
     outSize = os.path.getsize(outFilePath)
     assert outSize > 0
 
+@pytest.fixture(params=[{'type':'datetime', 'format': ''},{'type':'date', 'format': ''}, {'type':'date', 'format': 'ddda'}, {'type':'datetime', 'format': 'ddda'},{'type':'date', 'format': '%H'}, {'type':'datetime', 'format': '%H'}])
+def invalidDateDef(request):
+    return request.param
 
-
+def test_customDateInvalidFormat(tmpdir, invalidDateDef):
+    inFilePath = tmpdir.mkdir("in").join("customdate.csv" + str(random.random()))
+    inFilePath = str(inFilePath.realpath())
+    outDir = tmpdir.mkdir("out")
+    outFilePath = outDir.join(str(random.random()) + "customdate.csv.tde" )
+    outFilePath = str(outFilePath.realpath())
+    data = [['testcolumn']]
+    testFormat = "%H:%M %d.%m.%Y"
+    for rowIdx in range(0, 3):
+        value = strTimeProp("00:00 1.1.2015","00:00 1.1.1960", testFormat, random.random())
+        data.append([value])
+    with open(inFilePath, 'w') as inFile:
+        csvFile = csv.writer(inFile, delimiter=',')
+        csvFile.writerows(data)
+    typedefs = {'testcolumn':invalidDateDef}
+    with pytest.raises(ValueError):
+        src.convert2tde(inFilePath, outFilePath, typedefs)
 
 
 
