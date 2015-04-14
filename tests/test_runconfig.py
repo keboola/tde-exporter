@@ -25,6 +25,32 @@ def tagsAndTypes(sourceName):
     a.update(typedefs(sourceName))
     return a
 
+def columnConfig(columnDefinition):
+    params = {'typedefs':
+            {'test': {
+                'testcolumn': columnDefinition
+            }}}
+    config = { 'storage':
+        { 'input':{
+            'tables': [{'source':'test'}]
+        }
+      },
+          'parameters': params
+    }
+    return config
+
+
+## TEST DATE FORMAT
+@pytest.fixture(params=[{'type':'date', 'format':"%Y-%m-%d"}, {'type':'datetime', 'format':"%Y-%m-%d %H:%M:%S.%f"}, {'type':'datetime', 'format':"%Y-%m-%d %H:%M:%S"}])
+def validDateFormat(request):
+    config = columnConfig(request.param)
+    return config
+
+def test_validDateFormat(validDateFormat):
+    assert src.checkConfig(validDateFormat) == True
+
+
+
 ## TEST INVALID CONFIG, SHOULD FAIL
 @pytest.fixture(params=[typedefs('test'), tagsAndTypes('test')])
 def invalidConfig(request):
@@ -33,7 +59,7 @@ def invalidConfig(request):
             'tables': [{'source':'blabla'}]
         }
       },
-               'parameters':request.param
+           'parameters': request.param
     }
     return config
 
