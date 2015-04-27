@@ -31,7 +31,8 @@ def createManifest(outFilePath, outFileName, tags):
     manifest = {
         'is_permanent': True,
         'is_public': False,
-        'tags': resultTags
+        'tags': resultTags,
+        'is_encrypted': True
     }
     print 'tags ', resultTags
     debug("writing manifest " + outFileName)
