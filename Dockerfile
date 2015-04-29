@@ -19,4 +19,4 @@ RUN python setup.py build
 RUN python setup.py install
 WORKDIR /home
 RUN PYTHONPATH=. py.test
-ENTRYPOINT python ./src/main.py --data=/data
+ENTRYPOINT python -u ./src/main.py --data=/data
