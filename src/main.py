@@ -3,14 +3,19 @@ import argparse
 import yaml
 import csv2tde
 import csv
+import sys
 
 csvDelimiter = ','
 csvQuoteChar = '"'
 defaultTags = ['table-export', 'tde']
 
 
-def debug(msg):
-    print msg + '\n\n'
+def debug(*args):
+    for arg in args:
+        sys.stdout.write(str(arg))
+    if len(args) > 0:
+        sys.stdout.write('\n')
+
 
 
 def convert2tde(inFilePath, outFilePath, typedefs):
@@ -34,7 +39,7 @@ def createManifest(outFilePath, outFileName, tags):
         'tags': resultTags,
         'is_encrypted': True
     }
-    print 'tags ', resultTags
+    debug('tags ', resultTags)
     debug("writing manifest " + outFileName)
     with open(outFilePath + '.manifest', 'w') as manifestFile:
         yaml.dump(manifest, manifestFile)
