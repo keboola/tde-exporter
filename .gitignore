@@ -4,3 +4,4 @@
 /sampleconfig/
 /src/main.pyc
 *.pyc
+/DataExtract.log
