@@ -32,7 +32,7 @@ def getParameters(config, path):
 
 
 def createManifest(outFilePath, outFileName, tags):
-    resultTags = defaultTags + tags
+    resultTags = list(set(defaultTags + tags))
     manifest = {
         'is_permanent': True,
         'is_public': False,
