@@ -4,6 +4,7 @@ import yaml
 import csv2tde
 import csv
 import sys
+import os
 
 csvDelimiter = ','
 csvQuoteChar = '"'
@@ -30,15 +31,28 @@ def getParameters(config, path):
     except:
         return None
 
+def getRunId():
+    try:
+        runid = os.environ['KBC_RUNID']
+        return runid.split('.')[0]
+    except:
+        return None
+
 
 def createManifest(outFilePath, outFileName, tags):
-    resultTags = list(set(defaultTags + tags))
+    runidtag = []
+    runid = getRunId()
+    if runid:
+        debug('runid tag:', runid)
+        runidtag = [runid]
+    resultTags = list(set(defaultTags + tags + runidtag))
     manifest = {
         'is_permanent': True,
         'is_public': False,
         'tags': resultTags,
         'is_encrypted': True
     }
+
     debug('tags ', resultTags)
     debug("writing manifest " + outFileName)
     with open(outFilePath + '.manifest', 'w') as manifestFile:
