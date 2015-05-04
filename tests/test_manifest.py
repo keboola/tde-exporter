@@ -36,4 +36,4 @@ def test_manifest(tmpdir, validTags, run_ids):
         assert manifest['tags'].count(tag) == 1
     assert type(manifest['tags']) == type([])
     if run_ids:
-        assert manifest['tags'].count(run_ids) == 1
+        assert manifest['tags'].count('runId-' + run_ids) == 1

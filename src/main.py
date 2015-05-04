@@ -34,7 +34,7 @@ def getParameters(config, path):
 def getRunId():
     try:
         runid = os.environ['KBC_RUNID']
-        return runid.split('.')[0]
+        return 'runId-' + runid.split('.')[0]
     except:
         return None
 
