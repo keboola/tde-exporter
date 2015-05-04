@@ -13,8 +13,15 @@ def test_answer():
 def validTags(request):
     return request.param
 
+@pytest.fixture (params=[[None, ""], ["runid", "runid"], ["runid.blabla", "runid"]])
+def run_ids(request):
+    runid = request.param[0]
+    expected = request.param[1]
+    os.environ['KBC_RUNID'] = runid
+    return expected
 
-def test_manifest(tmpdir, validTags):
+
+def test_manifest(tmpdir, validTags, run_ids):
     outFileName = 'test_manifest'
     outFilePath = str(tmpdir.join(outFileName).realpath())
     tags = validTags
@@ -27,3 +34,5 @@ def test_manifest(tmpdir, validTags):
     for tag in tags:
         assert manifest['tags'].count(tag) == 1
     assert type(manifest['tags']) == type([])
+    if run_ids != None:
+        assert manifest['tags'].count(run_ids) == 1
