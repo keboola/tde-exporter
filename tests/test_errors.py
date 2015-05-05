@@ -11,6 +11,24 @@ def test_answer():
 
     #['boolean','number', 'decimal', 'date','datetime', 'string']
 
+# args is [[columnvalues],[columnsvalues], [columnsvalues]]
+def merge_columns(*args):
+    cunt = 0
+    result = []
+    for arg in args:
+        if len(arg) > cunt:
+            cunt = len(arg)
+    for i in range(0, cunt ):
+        row = []
+        for arg in args:
+            if i < len(arg):
+                row.append(arg[i])
+            else:
+                row.append("")
+        result.append(row)
+    return result
+
+#check if file exists and is not empty
 def file_exists(filepath):
     outSize = os.path.getsize(filepath)
     return outSize > 0
@@ -40,3 +58,27 @@ def test_emptyoutput(tmpdir):
     print inFilePath, outFilePath
     src.convert2tde(inFilePath, outFilePath, {})
     assert file_exists(outFilePath)
+
+
+
+#test missing values, should pass filling null to tde file
+def test_missing(tmpdir):
+    c1 = ["1","2","","3","4"]
+    c2 = ["asd", "dd", "asd"]
+    c3 = ["1.0", "", "2.0", "3.3", ""]
+    c4 = ["", "True", "", "False"]
+    c5 = ["2015-1-1", "", "", "", ""]
+    c6 = ["", "2015-1-1 00:00:00", "", "", ""]
+    data = merge_columns(c1, c2, c3, c4, c5, c6)
+    print data
+    header = ["c1", "c2", "c3", "c4", "c5", "c6"]
+    inFilePath, outFilePath = createcsvfile('missing.csv', tmpdir, header, data)
+    typedefs = {
+        "c1":{"type": "number"},
+        "c2":{"type": "string"},
+        "c3":{"type": "decimal"},
+        "c4": {"type": "boolean"},
+        "c5": {"type": "date"},
+        "c6": {"type": "datetime"}
+    }
+    src.convert2tde(inFilePath, outFilePath, typedefs)
