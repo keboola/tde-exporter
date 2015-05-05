@@ -82,3 +82,4 @@ def test_missing(tmpdir):
         "c6": {"type": "datetime"}
     }
     src.convert2tde(inFilePath, outFilePath, typedefs)
+    assert file_exists(outFilePath)
