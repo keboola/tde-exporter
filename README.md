@@ -2,11 +2,17 @@
 
 TDE-exporter exports tables from KBC Storage into TDE file format([Tableau Data Extract](http://www.tableau.com/about/blog/2014/7/understanding-tableau-data-extracts-part1)).
 
-User can run tde-exporter as any other keboola component or extractor etc., or register its run as **orchestration task**. After `\run` finishes, the resulting TDE files will be avaliable in *Storage->file uploads* section with URL to download.
+User can run tde-exporter as any other keboola component or extractor etc., or register its run as **orchestration task**. After `\run` finishes, the resulting TDE files will be avaliable in *Storage->file uploads* section with URL to download. 
 
-TDE-exporter is [Keboola Docker component](https://github.com/keboola/docker-bundle) that supports [custom configuration](http://docs.kebooladocker.apiary.io/#reference/run/create-a-job/custom-configuration) for `\run` API call described as follows:
+## Tagging
+The resulting file is always tagged by **default tags** `tde` and `table-export`, if the job proccess contains `runId` then the file is also tagged by runId in format `runId-<runid>`. If the runid is composed(eg 1234.9999) the only so called `orchestrator part`(before dot) is taken as runId tag value(e.g. from former case it would be: `runId-1234`). Configuration also allows append of custom tags along with default tags and runid tag(if present), see Configuration->Parameters->Tags.
+
+## Empty Values
+TDE-exporter handles empty(or null) values as valid `TDE specific null values` except for **string** data types where the actual empty value `""` is used. No error will ever be raised.
+
 
 # Configuration
+TDE-exporter is [Keboola Docker component](https://github.com/keboola/docker-bundle) that supports [custom configuration](http://docs.kebooladocker.apiary.io/#reference/run/create-a-job/custom-configuration) for `\run` API call described as follows:
 
 `\run` API call:
 
@@ -38,7 +44,7 @@ Specified in request body in `configData:storage:input:tables` as array of `{"so
 ## Parameters:
 Another part for request body as `configData:parameters` JSON object, contains:
 
-* tags: array of tags that will be assigned to the resulting file in sapi file uploads
+* tags: array of tags that will be assigned to the resulting file in sapi file uploads. 
 * typedefs: defines datatypes mapping of source tables columns to destination TDE columns:  `<table_id(must match source from input tables)>: {<column_name>:{type:<column_type>}...}` 
 
 e.g:
