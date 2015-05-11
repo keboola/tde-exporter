@@ -63,8 +63,9 @@ def test_customDateInvalidFormat(tmpdir, invalidDateDef):
         csvFile = csv.writer(inFile, delimiter=',')
         csvFile.writerows(data)
     typedefs = {'testcolumn':invalidDateDef}
-    with pytest.raises(ValueError):
+    with pytest.raises(SystemExit) as exc:
         src.convert2tde(inFilePath, outFilePath, typedefs)
+    assert exc.value.code == 1
 
 
 
