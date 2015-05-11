@@ -20,10 +20,18 @@ def debug(*args):
 
 
 def convert2tde(inFilePath, outFilePath, typedefs):
-    debug( "converting" +  inFilePath)
-    csvReader = csv.reader(open(inFilePath, 'rb'),
-                           delimiter = csvDelimiter, quotechar = csvQuoteChar)
-    csv2tde.convert(csvReader, outFilePath, typedefs)
+    try:
+        debug( "converting" +  inFilePath)
+        csvReader = csv.reader(open(inFilePath, 'rb'),
+                               delimiter = csvDelimiter, quotechar = csvQuoteChar)
+        csv2tde.convert(csvReader, outFilePath, typedefs)
+    except ValueError as e:
+        print "Error:",e
+        sys.exit(1)
+    except:
+        print "Unexpected error:", sys.exc_info()[0]
+        sys.exit(-1)
+
 
 def getParameters(config, path):
     try:

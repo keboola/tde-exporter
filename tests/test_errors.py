@@ -59,8 +59,6 @@ def test_emptyoutput(tmpdir):
     src.convert2tde(inFilePath, outFilePath, {})
     assert file_exists(outFilePath)
 
-
-
 #test missing values, should pass filling null to tde file
 def test_missing(tmpdir):
     c1 = ["1","2","","3","4"]
@@ -83,3 +81,19 @@ def test_missing(tmpdir):
     }
     src.convert2tde(inFilePath, outFilePath, typedefs)
     assert file_exists(outFilePath)
+
+@pytest.fixture(params=[["1","2","3", "adsasd"], ["afsf"], ["1","asdasd"]])
+def invalidNumbers(request):
+    result = []
+    for item in request.param:
+        result.append([item])
+    return result
+
+def test_failedNumber(tmpdir, invalidNumbers):
+    data = invalidNumbers
+    header = ["number"]
+    inFilePath, outFilePath = createcsvfile('invalidnumber.csv', tmpdir, header, data)
+    typedefs = {"number":{"type":"number"}}
+    with pytest.raises(SystemExit) as exc:
+        src.convert2tde(inFilePath, outFilePath, typedefs)
+    assert exc.value.code == 1
