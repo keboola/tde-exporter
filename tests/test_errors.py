@@ -63,7 +63,7 @@ def test_emptyoutput(tmpdir):
 def test_missing(tmpdir):
     c1 = ["1","2","","3","4"]
     c2 = ["asd", "dd", "asd"]
-    c3 = ["1.0", "", "2.0", "3.3", ""]
+    c3 = ["1.0", "1", "20", "3.3", ""]
     c4 = ["", "True", "", "False"]
     c5 = ["2015-1-1", "", "", "", ""]
     c6 = ["", "2015-1-1 00:00:00", "", "", ""]
@@ -94,6 +94,23 @@ def test_failedNumber(tmpdir, invalidNumbers):
     header = ["number"]
     inFilePath, outFilePath = createcsvfile('invalidnumber.csv', tmpdir, header, data)
     typedefs = {"number":{"type":"number"}}
+    with pytest.raises(SystemExit) as exc:
+        src.convert2tde(inFilePath, outFilePath, typedefs)
+    assert exc.value.code == 1
+
+
+@pytest.fixture(params=[["1.2","2.1","3.2", "adsasd"], ["afsf"], ["1","asdasd"]])
+def invalidDecimals(request):
+    result = []
+    for item in request.param:
+        result.append([item])
+    return result
+
+def test_failedDecimal(tmpdir, invalidDecimals):
+    data = invalidDecimals
+    header = ["decimal"]
+    inFilePath, outFilePath = createcsvfile('invaliddecimal.csv', tmpdir, header, data)
+    typedefs = {"decimal":{"type":"decimal"}}
     with pytest.raises(SystemExit) as exc:
         src.convert2tde(inFilePath, outFilePath, typedefs)
     assert exc.value.code == 1
