@@ -87,7 +87,7 @@ def test_missing(tmpdir):
     src.convert2tde(inFilePath, outFilePath, typedefs)
     assert file_exists(outFilePath)
 
-@pytest.fixture(params=[["1","2","3", "adsasd"], ["afsf"], ["1","asdasd"]])
+@pytest.fixture(params=[["1","2","3", "adsasd"], ["afsf"], ["1","asdasd"],["","1", "null"]])
 def invalidNumbers(request):
     result = []
     for item in request.param:
@@ -104,7 +104,7 @@ def test_failedNumber(tmpdir, invalidNumbers):
     assert exc.value.code == 1
 
 
-@pytest.fixture(params=[["1.2","2.1","3.2", "adsasd"], ["afsf"], ["1","asdasd"]])
+@pytest.fixture(params=[["1.2","2.1","3.2", "adsasd"], ["afsf"], ["1","asdasd"],["","null"]])
 def invalidDecimals(request):
     result = []
     for item in request.param:
