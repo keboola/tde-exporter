@@ -49,7 +49,7 @@ fieldSetterMap = {
         Type.BOOLEAN:        lambda row, colNo, value, colDef: row.setBoolean( colNo, value.lower() == "true" ),
         Type.INTEGER:        lambda row, colNo, value, colDef: row.setInteger( colNo, int(value) ),
         Type.DOUBLE:         lambda row, colNo, value, colDef: row.setDouble( colNo, float(value) ),
-        Type.UNICODE_STRING: lambda row, colNo, value, colDef: row.setString( colNo, value ),
+        Type.UNICODE_STRING: lambda row, colNo, value, colDef: row.setString( colNo, value.decode('utf-8') ),
         Type.CHAR_STRING:    lambda row, colNo, value, colDef: row.setCharString( colNo, value ),
         Type.DATE:           lambda row, colNo, value, colDef: setDate(row, colNo, value, colDef),
         Type.DATETIME:       lambda row, colNo, value, colDef: setDateTime( row, colNo, value, colDef )
