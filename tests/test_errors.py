@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 import src
 import csv
@@ -44,10 +45,14 @@ def createcsvfile(fname, tmpdir, header_row, data_rows):
     indir = tmpdir.ensure_dir('in', 'tables')
     inFilePath = str(indir.join(randstr + fname).realpath())
     outFilePath = str(outdir.join(randstr + fname + ".tde").realpath())
+    decodedData = []
+    for row in data_rows:
+        decodedRow = [x.encode('utf-8') for x in row]
+        decodedData.append(decodedRow)
     with open(inFilePath, 'w') as inFile:
         writer = csv.writer(inFile)
         writer.writerows([header_row])
-        writer.writerows(data_rows)
+        writer.writerows(decodedData)
     return inFilePath, outFilePath
 
 # should not raise an exception, and pass ok
@@ -114,3 +119,13 @@ def test_failedDecimal(tmpdir, invalidDecimals):
     with pytest.raises(SystemExit) as exc:
         src.convert2tde(inFilePath, outFilePath, typedefs)
     assert exc.value.code == 1
+
+
+def test_unicodeStrings(tmpdir):
+    unicodestring = u' the  (£670bn)'
+    data= [[unicodestring]]
+    header= ["text"]
+    typedefs = {"text":{"type":"string"}}
+    inFilePath, outFilePath = createcsvfile('invaliddecimal.csv', tmpdir, header, data)
+    src.convert2tde(inFilePath, outFilePath, typedefs)
+    assert file_exists(outFilePath)
