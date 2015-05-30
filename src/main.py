@@ -15,8 +15,8 @@ defaultTags = ['table-export', 'tde']
 def debug(*args):
     for arg in args:
         sys.stdout.write(str(arg))
-    if len(args) > 0:
-        sys.stdout.write('\n')
+        if len(args) > 0:
+            sys.stdout.write('\n')
 
 
 
