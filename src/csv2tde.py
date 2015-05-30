@@ -143,11 +143,7 @@ def convert(csvReader, tdeFile, typedefs) :
             # Output progress line
             rowNo += 1
             if rowNo % 100000 == 0:
-                print "\b"*32 + locale.format("%d", rowNo, grouping=True), "rows inserted",
-
-        # Terminate progress line
-        if rowNo >= 100000:
-            print  # terminate line
+                print locale.format("%d", rowNo, grouping=True), "rows inserted",
 
 
 # Output elapsed time
