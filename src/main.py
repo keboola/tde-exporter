@@ -5,6 +5,7 @@ import csv2tde
 import csv
 import sys
 import os
+import traceback
 
 csvDelimiter = ','
 csvQuoteChar = '"'
@@ -30,6 +31,9 @@ def convert2tde(inFilePath, outFilePath, typedefs):
         sys.exit(1)
     except:
         print "Unexpected error:", sys.exc_info()[0]
+        print '-'*50
+        traceback.print_exc(file=sys.stdout)
+        print '-'*50
         sys.exit(-1)
 
 
