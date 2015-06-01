@@ -5,6 +5,7 @@ import csv
 import random
 import time
 import os
+import inspect
 
 def test_answer():
     assert 1 == 1
@@ -63,6 +64,19 @@ def test_emptyoutput(tmpdir):
     print inFilePath, outFilePath
     src.convert2tde(inFilePath, outFilePath, {})
     assert file_exists(outFilePath)
+
+# should raise TableauExcpetion by exporting to the same file twice,
+# assert that error code is 1
+def test_tableauException(tmpdir):
+    header = ["tableau"]
+    data = [["1"]]
+    inFilePath, outFilePath = createcsvfile('tableau.csv', tmpdir, header, data)
+    with pytest.raises(SystemExit) as exc:
+        src.convert2tde(inFilePath, outFilePath, {})
+        src.convert2tde(inFilePath, outFilePath, {})
+    assert exc.value.code == 1
+
+
 
 #test missing values, should pass filling null to tde file
 def test_missing(tmpdir):
