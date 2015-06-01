@@ -32,7 +32,7 @@ def convert2tde(inFilePath, outFilePath, typedefs):
     except:
         print "Unexpected error:", sys.exc_info()[0]
         print '-'*50
-        traceback.print_exc(file=sys.stdout)
+        traceback.print_exc(file=sys.stderr)
         print '-'*50
         sys.exit(-1)
 
