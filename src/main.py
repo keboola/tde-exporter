@@ -6,6 +6,7 @@ import csv
 import sys
 import os
 import traceback
+from dataextract import TableauException
 
 csvDelimiter = ','
 csvQuoteChar = '"'
@@ -28,6 +29,9 @@ def convert2tde(inFilePath, outFilePath, typedefs):
         csv2tde.convert(csvReader, outFilePath, typedefs)
     except ValueError as e:
         print "Error:",e
+        sys.exit(1)
+    except TableauException as e:
+        print e
         sys.exit(1)
     except:
         print "Unexpected error:", sys.exc_info()[0]
