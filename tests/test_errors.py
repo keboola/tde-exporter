@@ -143,3 +143,15 @@ def test_unicodeStrings(tmpdir):
     inFilePath, outFilePath = createcsvfile('invaliddecimal.csv', tmpdir, header, data)
     src.convert2tde(inFilePath, outFilePath, typedefs)
     assert file_exists(outFilePath)
+
+
+def test_nullbyteConvert(tmpdir):
+    typedefs = {"text":{"type":"string"}}
+    inFilePath = './tests/nullbyte.csv'
+    randstr = str(random.randint(1,100000))
+    fname = 'nullbyte'
+    outdir = tmpdir.ensure_dir('out', 'files')
+    outFilePath = str(outdir.join(randstr + fname + ".tde").realpath())
+
+    src.convert2tde(inFilePath, outFilePath, typedefs)
+    assert file_exists(outFilePath)
