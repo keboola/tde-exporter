@@ -6,7 +6,9 @@ import csv
 import sys
 import os
 import traceback
+import codecs
 from dataextract import TableauException
+import itertools
 
 csvDelimiter = ','
 csvQuoteChar = '"'
@@ -24,9 +26,11 @@ def debug(*args):
 def convert2tde(inFilePath, outFilePath, typedefs):
     try:
         debug( "converting" +  inFilePath)
-        csvReader = csv.reader(open(inFilePath, 'rb'),
-                               delimiter = csvDelimiter, quotechar = csvQuoteChar)
-        csv2tde.convert(csvReader, outFilePath, typedefs)
+        with open(inFilePath, 'rb') as inFile:
+            lazyLines = itertools.imap(lambda line: line.replace('\0', ''), inFile)
+            csvReader = csv.reader(lazyLines,
+                                   delimiter = csvDelimiter, quotechar = csvQuoteChar)
+            csv2tde.convert(csvReader, outFilePath, typedefs)
     except ValueError as e:
         print "Error:",e
         sys.exit(1)
