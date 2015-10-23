@@ -5,3 +5,5 @@
 /src/main.pyc
 *.pyc
 /DataExtract.log
+/.cache/
+/tests/.cache/
