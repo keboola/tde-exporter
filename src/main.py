@@ -8,19 +8,12 @@ import os
 import traceback
 import codecs
 from dataextract import TableauException
+from logger import debug
 import itertools
 
 csvDelimiter = ','
 csvQuoteChar = '"'
 defaultTags = ['table-export', 'tde']
-
-
-def debug(*args):
-    for arg in args:
-        sys.stdout.write(str(arg))
-    if len(args) > 0:
-        sys.stdout.write('\n')
-
 
 
 def convert2tde(inFilePath, outFilePath, typedefs):

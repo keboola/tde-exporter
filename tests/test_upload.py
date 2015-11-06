@@ -51,8 +51,7 @@ def test_runUnknownComponentFail():
 # def test_uploadtmp():
 #     componentId = 'wr-dropbox'
 #     params = json.loads('{"configData":{"storage":{"input":{"files":[{"query":"id:147088910"}]}},"parameters":{"credentials":"tde-exporter-test","mode":true}}}')
-#     token = '219-12052-0b58d623abefc099378db3907ee9682169cd7429'
-#     print params
+#     token = ''
 #     result = runTask(componentId, params, token)
 #     print result
 #     assert 1 == 1
