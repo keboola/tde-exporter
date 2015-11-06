@@ -1,10 +1,11 @@
 import pytest
 from src.upload import *
+from src import Exceptions
 import csv
 import random
 import time
 import os
-
+import json
 
 def test_answer():
     assert 1 == 1
@@ -21,5 +22,37 @@ def kbc_componentId(request):
     return request.param
 
 def test_getComponentUri(kbc_componentId):
-   uri = getComponenUri(kbc_componentId)
+   uri = getComponentUri(kbc_componentId)
    assert len(uri) > 1
+
+def test_request500Fail():
+    with pytest.raises(Exception) as exc:
+        postRequest('www.asdasd.dd', {}, '')
+    assert 'Error' in str(exc)
+
+def test_request400Fail():
+    with pytest.raises(Exceptions.UploadException) as exc:
+        postRequest(connectionIndexUrl, {}, '')
+    assert 'User error' in str(exc)
+
+def test_uploadfail(kbc_componentId):
+    params = {}
+    token = ''
+    with pytest.raises(Exceptions.UploadException) as exc:
+        runTask(kbc_componentId, params, token)
+    assert 'UploadException' in str(exc)
+
+def test_runUnknownComponentFail():
+    with pytest.raises(Exceptions.UploadException) as exc:
+        runTask('asdasd', {}, '')
+    assert 'Unknown component' in str(exc)
+
+
+# def test_uploadtmp():
+#     componentId = 'wr-dropbox'
+#     params = json.loads('{"configData":{"storage":{"input":{"files":[{"query":"id:147088910"}]}},"parameters":{"credentials":"tde-exporter-test","mode":true}}}')
+#     token = '219-12052-0b58d623abefc099378db3907ee9682169cd7429'
+#     print params
+#     result = runTask(componentId, params, token)
+#     print result
+#     assert 1 == 1
