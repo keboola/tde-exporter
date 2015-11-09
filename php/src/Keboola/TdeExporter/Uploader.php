@@ -84,13 +84,15 @@ class Uploader
         // Check if all files from output mappings are present
         foreach ($configurations as $config) {
             if (!in_array($config["source"], $fileNames)) {
-                throw new MissingFileException("File '{$config["source"]}' not found.");
+                //throw new MissingFileException("File '{$config["source"]}' not found.");
+                throw new \Excpetion("File '{$config["source"]}' not found.");
             }
         }
         // Check for manifest orphans
         foreach ($manifestNames as $manifest) {
             if (!in_array(substr(basename($manifest), 0, -9), $fileNames)) {
-                throw new ManifestMismatchException("Found orphaned file manifest: '" . basename($manifest) . "'");
+                //throw new ManifestMismatchException("Found orphaned file manifest: '" . basename($manifest) . "'");
+                throw new \Excpetion("Found orphaned file manifest: '" . basename($manifest) . "'");
             }
         }
         foreach ($files as $file) {
@@ -116,12 +118,14 @@ class Uploader
                     $storageConfig = (new File\Manifest())->parse(array($configFromManifest));
                 }
             } catch (InvalidConfigurationException $e) {
-                throw new UserException("Failed to write manifest for table {$file->getFilename()}.", $e);
+                //throw new UserException("Failed to write manifest for table {$file->getFilename()}.", $e);
+                throw new \Exception("Failed to write manifest for table {$file->getFilename()}.", $e);
             }
             try {
                 $this->uploadFile($file->getPathname(), $storageConfig);
             } catch (ClientException $e) {
-                throw new UserException(
+                //throw new UserException(
+                throw new \Exception(
                     "Cannot upload file '{$file->getFilename()}' to Storage API: " . $e->getMessage(),
                     $e
                 );
@@ -133,7 +137,8 @@ class Uploader
             $processedOutputMappingFiles
         );
         if (count($diff)) {
-            throw new UserException("Couldn't process output mapping for file(s) '" . join("', '", $diff) . "'.");
+            //throw new UserException("Couldn't process output mapping for file(s) '" . join("', '", $diff) . "'.");
+            throw new \Exception("Couldn't process output mapping for file(s) '" . join("', '", $diff) . "'.");
         }
     }
 
@@ -148,7 +153,8 @@ class Uploader
         try {
             return $adapter->readFromFile($source);
         } catch (\Exception $e) {
-            throw new ManifestMismatchException(
+            //throw new ManifestMismatchException(
+            throw new \Exception(
                 "Failed to parse manifest file $source as " . $this->getFormat() . " " . $e->getMessage(),
                 $e
             );
