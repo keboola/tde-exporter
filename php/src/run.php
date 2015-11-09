@@ -1,10 +1,9 @@
-<?
+<?php
 /**
  * @package tde-uploader
  * @copyright 2015 Keboola
  * @author Tomasko Kacur <tomas.kacur@keboola.com>
  */
-
 
 use Symfony\Component\Yaml\Yaml;
 use Keboola\StorageApi\Client;
@@ -41,7 +40,7 @@ if (empty($runId)) {
 }
 $sapiClient->setRunId($runId);
 
-$uploader = $Uploader($sapiClient);
+$uploader = new Uploader($sapiClient);
 
 try {
     $uploader->uploadFiles($filesPath);

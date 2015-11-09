@@ -38,7 +38,7 @@ class Uploader
     /**
      * @param Client $client
      */
-    public function __construct(Client $client)
+    public function __construct($client)
     {
         $this->setClient($client);
     }
@@ -175,5 +175,15 @@ class Uploader
             ->setIsPublic($config["is_public"])
             ->setNotify($config["notify"]);
         $this->getClient()->uploadFile($source, $options);
+    }
+
+    /**
+     * @param Client $client
+     * @return $this
+     */
+    public function setClient($client)
+    {
+        $this->client = $client;
+        return $this;
     }
 }

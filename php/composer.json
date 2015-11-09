@@ -5,6 +5,7 @@
     "require": {
         "php": ">=5.3.3",
         "symfony/yaml": "~2.6.3",
+        "symfony/symfony": "2.7.5",
         "keboola/storage-api-client": "^2.14"
     },
     "require-dev": {
