@@ -3,6 +3,8 @@
 /src/csv2tde.pyc
 /sampleconfig/
 /src/main.pyc
+php/vendor/
+php/composer.phar
 *.pyc
 /DataExtract.log
 /.cache/
