@@ -1,7 +1,10 @@
 <?php
 namespace Keboola\TdeExporter;
 use Symfony\Component\Finder\Finder;
-
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\SplFileInfo;
+use Keboola\StorageApi\Options\FileUploadOptions;
 
 /**
  * Class Uploader
@@ -113,22 +116,20 @@ class Uploader
             try {
                 // Mapping with higher priority
                 if ($configFromMapping || !$configFromManifest) {
-                    $storageConfig = (new File\Manifest())->parse(array($configFromMapping));
+                    $storageConfig = (new Manifest())->parse(array($configFromMapping));
                 } else {
-                    $storageConfig = (new File\Manifest())->parse(array($configFromManifest));
+                    $storageConfig = (new Manifest())->parse(array($configFromManifest));
                 }
-            } catch (InvalidConfigurationException $e) {
+            } catch (\Exception $e) {
                 //throw new UserException("Failed to write manifest for table {$file->getFilename()}.", $e);
-                throw new \Exception("Failed to write manifest for table {$file->getFilename()}.", $e);
+                throw new \Exception("Failed to write manifest for table {$file->getFilename()}. {$e->getMessage()}");
             }
             try {
                 $this->uploadFile($file->getPathname(), $storageConfig);
-            } catch (ClientException $e) {
+            } catch (\Exception $e) {
                 //throw new UserException(
                 throw new \Exception(
-                    "Cannot upload file '{$file->getFilename()}' to Storage API: " . $e->getMessage(),
-                    $e
-                );
+                    "Cannot upload file '{$file->getFilename()}' to Storage API: " . $e->getMessage());
             }
         }
         $processedOutputMappingFiles = array_unique($processedOutputMappingFiles);
@@ -143,21 +144,50 @@ class Uploader
     }
 
 
- /**
+    /**
      * @param $source
      * @return array
      */
     protected function readFileManifest($source)
     {
-        $adapter = new File\Manifest\Adapter($this->getFormat());
+        $file = $source;
+        $fs = new FiLesystem();
+        if (!$fs->exists($file)) {
+            throw new \Exception("File '$file' not found.");
+        }
+
+
+
+        //$adapter = new File\Manifest\Adapter($this->getFormat());
         try {
-            return $adapter->readFromFile($source);
+            $yaml = new Yaml();
+            $serialized = $this->getContents($file);
+            $data = $yaml->parse($serialized);
+            return $data;
+            //return $adapter->readFromFile($source);
         } catch (\Exception $e) {
             //throw new ManifestMismatchException(
             throw new \Exception(
-                "Failed to parse manifest file $source as " . $this->getFormat() . " " . $e->getMessage(),
-                $e
-            );
+                "Failed to parse manifest file $source as " . $this->getFormat() . " " . $e->getMessage());
+        }
+    }
+
+
+ /**
+     * @param $file
+     * @return mixed
+     * @throws ApplicationException
+     */
+    public function getContents($file)
+    {
+        if (!(new Filesystem())->exists($file)) {
+            throw new \Exception("File" . $file . " not found.");
+        }
+        $fileHandler = new SplFileInfo($file, "", basename($file));
+        if ($fileHandler) {
+            return $fileHandler->getContents();
+        } else {
+            throw new \Exception("File" . $file . " not found.");
         }
     }
     /**

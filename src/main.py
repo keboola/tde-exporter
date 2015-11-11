@@ -1,5 +1,6 @@
 # coding=utf-8
 import argparse
+import subprocess
 import yaml
 import csv2tde
 import csv
@@ -44,17 +45,32 @@ def getParameters(config, path):
     except:
         return None
 
-def getRunId():
+def getParentRunIdTag():
     try:
         runid = os.environ['KBC_RUNID']
         return 'runId-' + runid.split('.')[0]
     except:
         return None
 
+def getRunId():
+    try:
+        runid = os.environ['KBC_RUNID']
+        return runid
+    except:
+        return None
+
+def getToken():
+    try:
+        token = os.environ['KBC_TOKEN']
+        return token
+    except:
+        debug('Error: token is missing')
+        exit(-1);
+
 
 def createManifest(outFilePath, outFileName, tags):
     runidtag = []
-    runid = getRunId()
+    runid = getParentRunIdTag()
     if runid:
         debug('runid tag:', runid)
         runidtag = [runid]
@@ -104,16 +120,33 @@ def checkConfig(config):
                     result = False
                     print 'Unsupported column data type(',column['type'],') for', source
     return result
+def createOutDir(dataDir):
+    outDirPath = ''
+
+def uploadFiles(token, runId):
+    debug('Uploading files started')
+    args = ["php", "php/src/run.php", token, runId]
+    code = subprocess.call(args)
+    if code != 0:
+        debug('Error uploading files')
+        exit(-1)
+    debug('Uploading files finished')
 
 
 def main(args):
+    token = getToken()
+    runId = getRunId()
     config = loadConfigFile(args.dataDir)
     inTables = config['storage']['input']['tables']
     if not checkConfig(config):
         exit(1)
     inPathPrefix = args.dataDir + '/in/tables/'
-    outPathPrefix = args.dataDir + '/out/files/'
+    outPathPrefix = args.dataDir + '/tde-files/'
+    #create output dir if not exists
+    if not os.path.exists(outPathPrefix):
+        os.makedirs(outPathPrefix)
     inFilesPaths = inTables
+
     for table in inFilesPaths:
         fileName = table['source']
         if 'destination' in table:
@@ -125,6 +158,7 @@ def main(args):
         convert2tde(inFilePath, outFilePath, typedefs or {})
         tags = getParameters(config,['tags'])
         createManifest(outFilePath, outFileName, tags or [])
+    uploadFiles(token, runId)
 
 
 if __name__ == '__main__':
