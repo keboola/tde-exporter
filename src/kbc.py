@@ -1,7 +1,7 @@
 import httplib2 # pip install httplib2
 import json
 import time
-from . import Exceptions
+import Exceptions
 from logger import debug
 
 connectionIndexUrl = 'https://connection.keboola.com/v2/storage'
@@ -67,6 +67,6 @@ def runTask(componentId, params, token):
     debug('started upload to ', componentId, ' jobId: ', jobId)
     result = waitForAsyncJob(jobDetail['url'], token)
     if result['status'] != 'success':
-        raise Exceptions.UploadException('Failed to upload file')
+        raise Exceptions.UploadException('Failed to upload file to ' + componentId + ' with jobId:' + str(jobId))
     debug('finished upload to ', componentId, ' jobId: ', jobId)
     return result

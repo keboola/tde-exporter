@@ -11,11 +11,19 @@ import codecs
 from dataextract import TableauException
 from logger import debug
 import itertools
+import uploadTasks
+import Exceptions
 
 csvDelimiter = ','
 csvQuoteChar = '"'
 defaultTags = ['table-export', 'tde']
 
+def handleApplicationError():
+    print "Unexpected error:", sys.exc_info()[0]
+    print '-'*50
+    traceback.print_exc(file=sys.stderr)
+    print '-'*50
+    sys.exit(-1)
 
 def convert2tde(inFilePath, outFilePath, typedefs):
     try:
@@ -32,11 +40,7 @@ def convert2tde(inFilePath, outFilePath, typedefs):
         print e
         sys.exit(1)
     except:
-        print "Unexpected error:", sys.exc_info()[0]
-        print '-'*50
-        traceback.print_exc(file=sys.stderr)
-        print '-'*50
-        sys.exit(-1)
+        handleApplicationError()
 
 
 def getParameters(config, path):
@@ -124,19 +128,20 @@ def createOutDir(dataDir):
     outDirPath = ''
 
 def uploadFiles(token, runId):
-    debug('Uploading files started')
+    debug('Sending files to Keboola storage started')
     args = ["php", "php/src/run.php", token, runId]
     code = subprocess.call(args)
     if code != 0:
         debug('Error uploading files')
         exit(-1)
-    debug('Uploading files finished')
+    debug('Sending files to Keboola storage finished')
 
 
 def main(args):
     token = getToken()
     runId = getRunId()
     config = loadConfigFile(args.dataDir)
+
     inTables = config['storage']['input']['tables']
     if not checkConfig(config):
         exit(1)
@@ -158,7 +163,17 @@ def main(args):
         convert2tde(inFilePath, outFilePath, typedefs or {})
         tags = getParameters(config,['tags'])
         createManifest(outFilePath, outFileName, tags or [])
-    uploadFiles(token, runId)
+
+    try:
+        uploadFiles(token, runId)
+        uploadTasks.runUploadTasks(config, token)
+    except Exceptions.UploadException as e:
+        print e
+        sys.exit(1)
+    except:
+        handleApplicationError()
+
+
 
 
 if __name__ == '__main__':
