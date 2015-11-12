@@ -1,5 +1,5 @@
 import pytest
-from src.upload import *
+from src.kbc import *
 from src import Exceptions
 import csv
 import random

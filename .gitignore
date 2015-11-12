@@ -9,3 +9,5 @@ php/composer.phar
 /DataExtract.log
 /.cache/
 /tests/.cache/
+/php/.tern-port
+/src/.cache/
