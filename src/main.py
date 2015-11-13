@@ -160,13 +160,16 @@ def uploadFiles(token, runId):
     """
     send files to file uploads of the kbc project
     """
+    sourceFolder = '/data/tde-files'
     debug('Sending files to Keboola storage started')
-    args = ["php", "php/src/run.php", token, runId]
+    args = ["php", "php/src/run.php", token, sourceFolder, runId]
+    if not runId:
+        args = ["php", "php/src/run.php", token, sourceFolder]
     code = subprocess.call(args)
     if code != 0:
-        debug('Error uploading files')
-        exit(-1)
+        raise Exception('Error uploading files')
     debug('Sending files to Keboola storage finished')
+    return True
 
 
 def main(args):
