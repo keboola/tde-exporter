@@ -1,4 +1,5 @@
 import pytest
+from src.main import uploadFiles
 from src.kbc import *
 from src import Exceptions
 import csv
@@ -46,6 +47,18 @@ def test_runUnknownComponentFail():
     with pytest.raises(Exceptions.UploadException) as exc:
         runTask('asdasd', {}, '')
     assert 'Unknown component' in str(exc)
+
+def test_phpUploadEmptyFiles():
+    assert uploadFiles('asdasd', 'asd') == True
+    assert uploadFiles('asdasd', None) == True
+
+    # with pytest.raises(Exception) as exc:
+    #     uploadFiles('asdasd', 'asd')
+    # assert 'Error uploading files' in str(exc)
+    # with pytest.raises(Exception) as exc2:
+    #     uploadFiles('asdasd', None)
+    # assert 'Error uploading files' in str(exc2)
+
 
 
 # def test_uploadtmp():
