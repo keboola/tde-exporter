@@ -9,7 +9,7 @@ use Symfony\Component\Yaml\Yaml;
 use Keboola\StorageApi\Client;
 use Keboola\TdeExporter\Uploader;
 
-$filesPath = "/data/tde-files";
+// $filesPath = "/data/tde-files"; -- givev from script arguments argv[2]
 
 
 set_error_handler(
@@ -24,28 +24,35 @@ set_error_handler(
 require_once(dirname(__FILE__) . "/../vendor/autoload.php");
 //var_dump($argv);
 
-//$token = getenv('KBC_TOKEN');
+//set $token = getenv('KBC_TOKEN');
 if (count($argv) < 2) {
     print 'php-uploader error: kbc token not provided';
     exit(1);
 }
-
 $token = $argv[1];
 if (empty($token)) {
     print 'php-uploader error: kbc token not provided or missing';
     exit(1);
 }
 
+//set $filesPath
+if (count($argv) < 3) {
+    print 'php-uploader error: upload path not provided';
+    exit(1);
+}
+$filesPath = $argv[2];
+
+// set run id
+$runId = '';
+if (count($argv) > 3) {
+    $runId = $argv[3];
+
+}
+
 $sapiClient = new Client([
     'token' => $token,
 ]);
 
-// set run id
-$runId = '';
-if (count($argv) > 2) {
-    $runId = $argv[2];
-
-}
 
 $sapiClient->setRunId($runId);
 
