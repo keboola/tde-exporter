@@ -8,12 +8,19 @@ componentIdMap = {
 }
 
 def getParameters(config, path):
+    """
+    return object defined by @path(list) from parameters object of the given config
+    """
     try:
         return reduce(lambda d, k: d[k], ['parameters'] + path, config)
     except:
         return None
 
 def generateTaskRunParameters(componentId, credentials):
+    """
+    return object that will be passed as params to \run api call
+    should configure the component to take all uploaded files shared with current parent runId
+    """
     storage = {
         "input": {
             "files": [
@@ -69,8 +76,8 @@ def generateTaskRunParameters(componentId, credentials):
 
 def runUploadTasks(config, token):
     """
-    For all @components from @config:params:uploadTasks call \run with token and runId
-    that takes all files filtered by this job runId
+    For all @components from @config:params:uploadTasks call \run with token
+    that takes all files filtered by parent job runId
     """
     components = getParameters(config, ['uploadTasks'])
     if components == None:
@@ -86,7 +93,3 @@ def runUploadTasks(config, token):
         credentials = getParameters(config, [component])
         params = generateTaskRunParameters(componentId, credentials)
         runTask(componentId, params, token)
-
-   #for each component in config:parameters:uploadTasks
-   #  generate run params for upload of files filtered by runId
-   #

@@ -19,6 +19,11 @@ csvQuoteChar = '"'
 defaultTags = ['table-export', 'tde']
 
 def handleApplicationError():
+    """
+    print application error and stack trace to the stderr
+    terminate application with return code -1(127)
+
+    """
     print "Unexpected error:", sys.exc_info()[0]
     print '-'*50
     traceback.print_exc(file=sys.stderr)
@@ -26,6 +31,9 @@ def handleApplicationError():
     sys.exit(-1)
 
 def convert2tde(inFilePath, outFilePath, typedefs):
+    """
+    convert file from @inFilePath to tde to @outFilePath
+    """
     try:
         debug( "converting" +  inFilePath)
         with open(inFilePath, 'rb') as inFile:
@@ -44,12 +52,21 @@ def convert2tde(inFilePath, outFilePath, typedefs):
 
 
 def getParameters(config, path):
+    """
+    For all @components from @config:params:uploadTasks call \run with token and runId
+    that takes all files filtered by this job runId
+    """
     try:
         return reduce(lambda d, k: d[k], ['parameters'] + path, config)
     except:
         return None
 
 def getParentRunIdTag():
+    """
+    return environment var parent runId prefixed with runId-
+    runId-<parent_run_id>
+    if no run id present return None
+    """
     try:
         runid = os.environ['KBC_RUNID']
         return 'runId-' + runid.split('.')[0]
@@ -57,6 +74,9 @@ def getParentRunIdTag():
         return None
 
 def getRunId():
+    """
+    return environment var runId or None if not present
+    """
     try:
         runid = os.environ['KBC_RUNID']
         return runid
@@ -64,6 +84,9 @@ def getRunId():
         return None
 
 def getToken():
+    """
+    return environment var kbc token or None if not present
+    """
     try:
         token = os.environ['KBC_TOKEN']
         return token
@@ -73,6 +96,9 @@ def getToken():
 
 
 def createManifest(outFilePath, outFileName, tags):
+    """
+    create yaml manifest file for kbc upload(output mapping)
+    """
     runidtag = []
     runid = getParentRunIdTag()
     if runid:
@@ -95,6 +121,9 @@ def loadConfigFile(dataDir):
     return yaml.load(open(dataDir + '/config.yml', 'r'))
 
 def checkConfig(config):
+    """
+    check config object and return True/False
+    """
     inTables = config['storage']['input']['tables']
     result = True
     # input mapping specified?
@@ -128,6 +157,9 @@ def createOutDir(dataDir):
     outDirPath = ''
 
 def uploadFiles(token, runId):
+    """
+    send files to file uploads of the kbc project
+    """
     debug('Sending files to Keboola storage started')
     args = ["php", "php/src/run.php", token, runId]
     code = subprocess.call(args)
@@ -138,6 +170,9 @@ def uploadFiles(token, runId):
 
 
 def main(args):
+    """
+    main control method
+    """
     token = getToken()
     runId = getRunId()
     config = loadConfigFile(args.dataDir)
@@ -175,7 +210,7 @@ def main(args):
 
 
 
-
+#entry point
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
     argparser.add_argument('-d', '--data', dest='dataDir')

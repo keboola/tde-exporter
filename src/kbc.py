@@ -1,3 +1,7 @@
+"""
+wraps keboola connection api
+runs and polls kbc components jobs
+"""
 import httplib2 # pip install httplib2
 import json
 import time
@@ -8,6 +12,10 @@ connectionIndexUrl = 'https://connection.keboola.com/v2/storage'
 http = httplib2.Http()
 
 def parseResponse(response):
+    """
+    take http @response, raise if status code is not 200
+    @return object with header and body extracted from the @response
+    """
     header = response[0]
     status = int(header['status'])
     if status not in range(200,300):
@@ -21,6 +29,10 @@ def parseResponse(response):
 
 
 def getRequest(url, token):
+    """
+    call a GET to @url, if @token present use it
+    return parsed response
+    """
     headers = {}
     if token != None:
         headers = {'X-StorageApi-Token': token}
@@ -28,6 +40,10 @@ def getRequest(url, token):
     return parseResponse(response)
 
 def postRequest(url, body, token):
+    """
+    call POST to @url with @body and @token(optional)
+    return parsed response
+    """
     headers = {'X-Storageapi-Token': token}
     headers['Content-Type'] = 'application/json; charset=UTF-8'
     body = json.dumps(body)
@@ -35,6 +51,10 @@ def postRequest(url, body, token):
     return parseResponse(response)
 
 def getComponentUri(componentId):
+    """
+    retrieve component uri from the kbc index page by @componentId
+    raise exception if not such component is present
+    """
     body = loadConnectionIndex()['body']
     components = body['components']
     filtered = filter(lambda c: c['id'] == componentId, components)
@@ -44,10 +64,17 @@ def getComponentUri(componentId):
     return component['uri']
 
 def loadConnectionIndex():
+    """
+    return parsed response from GET kbc\index\storage
+    """
     return getRequest(connectionIndexUrl, None)
 
 
 def waitForAsyncJob(url, token):
+    """
+    every 5 seconds poll job @url until the job is finished
+    return job detail
+    """
     jobDetail = {}
     timeout = 5
     while jobDetail.get('isFinished', False) != True:
