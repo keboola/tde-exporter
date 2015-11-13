@@ -8,4 +8,4 @@ install:
   - composer install --no-scripts -d ./php
 
 script:
-  - ./php/vendor/bin/phpunit
+  - ./php/vendor/bin/phpunit -c ./php/phpunit.xml.dist
