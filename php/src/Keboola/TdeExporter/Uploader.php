@@ -30,6 +30,16 @@ class Uploader
     }
 
     /**
+     * @param mixed $format
+     * @return $this
+     */
+    public function setFormat($format)
+    {
+        $this->format = $format;
+        return $this;
+    }
+
+    /**
      * @return Client
      */
     public function getClient()
@@ -88,14 +98,14 @@ class Uploader
         foreach ($configurations as $config) {
             if (!in_array($config["source"], $fileNames)) {
                 //throw new MissingFileException("File '{$config["source"]}' not found.");
-                throw new \Excpetion("File '{$config["source"]}' not found.");
+                throw new \Exception("File '{$config["source"]}' not found.");
             }
         }
         // Check for manifest orphans
         foreach ($manifestNames as $manifest) {
             if (!in_array(substr(basename($manifest), 0, -9), $fileNames)) {
                 //throw new ManifestMismatchException("Found orphaned file manifest: '" . basename($manifest) . "'");
-                throw new \Excpetion("Found orphaned file manifest: '" . basename($manifest) . "'");
+                throw new \Exception("Found orphaned file manifest: '" . basename($manifest) . "'");
             }
         }
         foreach ($files as $file) {
