@@ -26,12 +26,12 @@ class UploaderTest extends \PHPUnit_Framework_TestCase
     protected function clearBucket()
     {
         // Delete tables and bucket
-        if ($this->client->bucketExists("out.c-docker-test")) {
-            foreach ($this->client->listTables("out.c-docker-test") as $table) {
+        if ($this->client->bucketExists("out.c-tde-test")) {
+            foreach ($this->client->listTables("out.c-tde-test") as $table) {
                 $this->client->dropTable($table["id"]);
             }
             // Delete bucket
-            $this->client->dropBucket("out.c-docker-test");
+            $this->client->dropBucket("out.c-tde-test");
         }
     }
     /**
@@ -225,11 +225,11 @@ class UploaderTest extends \PHPUnit_Framework_TestCase
     {
         $root = $this->tmp->getTmpFolder();
         file_put_contents($root . "/upload/file1", "test");
-        file_put_contents($root . "/upload/file1.manifest", "tags: [\"docker-bundle-test-xxx\"]\nis_public: true");
+        file_put_contents($root . "/upload/file1.manifest", "tags: [\"tde-exporter-php-test-xxx\"]\nis_public: true");
         $configs = array(
             array(
                 "source" => "file2",
-                "tags" => array("docker-bundle-test"),
+                "tags" => array("tde-exporter-php-test"),
                 "is_public" => false
             )
         );
@@ -243,7 +243,7 @@ class UploaderTest extends \PHPUnit_Framework_TestCase
     public function testWriteFilesOrphanedManifest()
     {
         $root = $this->tmp->getTmpFolder();
-        file_put_contents($root . "/upload/file1.manifest", "tags: [\"docker-bundle-test-xxx\"]\nis_public: true");
+        file_put_contents($root . "/upload/file1.manifest", "tags: [\"tde-exporter-php-test-xxx\"]\nis_public: true");
         $writer = new Uploader($this->client);
         $writer->uploadFiles($root . "/upload");
     }
