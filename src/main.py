@@ -156,11 +156,11 @@ def checkConfig(config):
 def createOutDir(dataDir):
     outDirPath = ''
 
-def uploadFiles(token, runId):
+def uploadFiles(sourceFolder, token, runId):
     """
     send files to file uploads of the kbc project
     """
-    sourceFolder = '/data/tde-files'
+    #sourceFolder = '/data/tde-files'
     debug('Sending files to Keboola storage started')
     args = ["php", "php/src/run.php", token, sourceFolder, runId]
     if not runId:
@@ -203,7 +203,7 @@ def main(args):
         createManifest(outFilePath, outFileName, tags or [])
 
     try:
-        uploadFiles(token, runId)
+        uploadFiles(outPathPrefix, token, runId)
         uploadTasks.runUploadTasks(config, token)
     except Exceptions.UploadException as e:
         print e

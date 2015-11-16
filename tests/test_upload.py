@@ -48,9 +48,11 @@ def test_runUnknownComponentFail():
         runTask('asdasd', {}, '')
     assert 'Unknown component' in str(exc)
 
-def test_phpUploadEmptyFiles():
-    assert uploadFiles('asdasd', 'asd') == True
-    assert uploadFiles('asdasd', None) == True
+def test_phpUploadEmptyFiles(tmpdir):
+    sourceFolder = str(tmpdir.mkdir("tde-files").realpath())
+
+    assert uploadFiles(sourceFolder, 'asdasd', 'asd') == True
+    assert uploadFiles(sourceFolder, 'asdasd', None) == True
 
     # with pytest.raises(Exception) as exc:
     #     uploadFiles('asdasd', 'asd')
