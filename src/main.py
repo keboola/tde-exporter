@@ -184,7 +184,7 @@ def main(args):
     if not checkConfig(config):
         exit(1)
     inPathPrefix = args.dataDir + '/in/tables/'
-    outPathPrefix = args.dataDir + '/tde-files/'
+    outPathPrefix = '/tde-files/'
     #create output dir if not exists
     if not os.path.exists(outPathPrefix):
         os.makedirs(outPathPrefix)
