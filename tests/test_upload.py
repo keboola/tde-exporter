@@ -1,5 +1,6 @@
 import pytest
 from src.main import uploadFiles
+from src.uploadTasks import runUploadTasks
 from src.kbc import *
 from src import Exceptions
 import csv
@@ -78,3 +79,20 @@ def test_phpUploadEmptyFiles(tmpdir):
 #     result = runTask(componentId, params, token)
 #     print result
 #     assert 1 == 1
+
+
+
+def test_emptyUploadTasks():
+    config1 = {
+        'parameters' : {}
+    }
+    config2 = {
+        'parameters':{
+            'uploadTasks': []
+        }
+    }
+    token = '123'
+    runId = 'runid'
+    runUploadTasks(config1, token, runId)
+    runUploadTasks(config2, token, runId)
+    assert 1 == 1
