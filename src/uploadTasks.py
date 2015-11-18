@@ -59,13 +59,13 @@ def generateTaskRunParameters(componentId, credentials):
             {
               'account':
                 {
-                  'email': credentials.get('email'),
+                    'email': credentials.get('email'),
                     'accessToken': credentials.get('accessToken'),
-                    'refreshToken': credentials.get('refreshToken')
+                    'refreshToken': credentials.get('refreshToken'),
+                    'targetFolder': credentials.get('targetFolder')
                 },
               'query': "+tags:tde +tags:table-export",
-                'filterByRunId': True,
-                'targetFolder': credentials.get('targetFolder')
+              'filterByRunId': True
             }
       }
     }
