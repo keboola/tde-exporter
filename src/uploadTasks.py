@@ -81,10 +81,10 @@ def runUploadTasks(config, token, runId):
     that takes all files filtered by parent job runId
     """
     components = getParameters(config, ['uploadTasks'])
-    if components == None:
+    if (not components) or components == None:
         return
-    if not isinstance(components, list):
-        raise UploadException(component + ' not found')
+    # if not isinstance(components, list):
+    #     raise UploadException(component + ' not found')
 
     for component in components:
         componentId = componentIdMap.get(component)
