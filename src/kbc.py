@@ -39,7 +39,7 @@ def getRequest(url, token):
     response = http.request(url, 'GET', headers=headers)
     return parseResponse(response)
 
-def postRequest(url, body, token, runId):
+def postRequest(url, body, token, runId = None):
     """
     call POST to @url with @body and @token(optional)
     return parsed response
@@ -85,7 +85,7 @@ def waitForAsyncJob(url, token):
     return jobDetail
 
 
-def runTask(componentId, params, token, runId):
+def runTask(componentId, params, token, runId = None):
     """
     run and poll async run job of a kbc component
     """
