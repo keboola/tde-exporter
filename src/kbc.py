@@ -39,12 +39,14 @@ def getRequest(url, token):
     response = http.request(url, 'GET', headers=headers)
     return parseResponse(response)
 
-def postRequest(url, body, token):
+def postRequest(url, body, token, runId):
     """
     call POST to @url with @body and @token(optional)
     return parsed response
     """
     headers = {'X-Storageapi-Token': token}
+    if runId:
+        headers['X-KBC-RunId'] = runId
     headers['Content-Type'] = 'application/json; charset=UTF-8'
     body = json.dumps(body)
     response = http.request(url, 'POST', headers=headers, body=body)
@@ -83,12 +85,12 @@ def waitForAsyncJob(url, token):
     return jobDetail
 
 
-def runTask(componentId, params, token):
+def runTask(componentId, params, token, runId):
     """
     run and poll async run job of a kbc component
     """
     componentUrl = "{0}/run".format(getComponentUri(componentId))
-    response = postRequest(componentUrl, params, token)
+    response = postRequest(componentUrl, params, token, runId)
     jobDetail = response['body']
     jobId = jobDetail['id']
     debug('started upload to ', componentId, ' jobId: ', jobId)

@@ -204,7 +204,7 @@ def main(args):
 
     try:
         uploadFiles(outPathPrefix, token, runId)
-        uploadTasks.runUploadTasks(config, token)
+        uploadTasks.runUploadTasks(config, token, runId)
     except Exceptions.UploadException as e:
         print e
         sys.exit(1)

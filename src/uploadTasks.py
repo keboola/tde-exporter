@@ -74,7 +74,7 @@ def generateTaskRunParameters(componentId, credentials):
 
 
 
-def runUploadTasks(config, token):
+def runUploadTasks(config, token, runId):
     """
     For all @components from @config:params:uploadTasks call \run with token
     that takes all files filtered by parent job runId
@@ -92,4 +92,4 @@ def runUploadTasks(config, token):
         #take saved credentials object
         credentials = getParameters(config, [component])
         params = generateTaskRunParameters(componentId, credentials)
-        runTask(componentId, params, token)
+        runTask(componentId, params, token, runId)
