@@ -43,6 +43,14 @@ def test_uploadfail(kbc_componentId):
         runTask(kbc_componentId, params, token)
     assert 'UploadException' in str(exc)
 
+def test_uploadfailRunId(kbc_componentId):
+    params = {}
+    token = ''
+    with pytest.raises(Exceptions.UploadException) as exc:
+        runTask(kbc_componentId, params, token, 'testrunid')
+    assert 'UploadException' in str(exc)
+
+
 def test_runUnknownComponentFail():
     with pytest.raises(Exceptions.UploadException) as exc:
         runTask('asdasd', {}, '')
