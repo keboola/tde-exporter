@@ -1,12 +1,3 @@
-# -----------------------------------------------------------------------
-# The information in this file is the property of Tableau Software and
-# is confidential.
-#
-# Copyright (C) 2012  Tableau Software.
-# Patents Pending.
-# -----------------------------------------------------------------------
-# externalapi/samples/csv2tde.py
-# -----------------------------------------------------------------------
 import sys
 import csv
 import time
