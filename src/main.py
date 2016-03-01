@@ -8,7 +8,7 @@ import sys
 import os
 import traceback
 import codecs
-from dataextract import TableauException
+from tableausdk import TableauException
 from logger import debug
 import itertools
 import uploadTasks

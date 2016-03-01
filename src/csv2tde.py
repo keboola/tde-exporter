@@ -17,7 +17,9 @@ import re
 import ConfigParser
 
 # Import Tableau module
-from dataextract import *
+from tableausdk import *
+from tableausdk.Extract import *
+
 
 # Define type maps
 schemaIniTypeMap = {
@@ -58,7 +60,6 @@ def convert(csvReader, tdeFile, typedefs) :
     # Start stopwatch
     #startTime = time.clock()
     #csvFile = sys.argv[1];
-
     hasHeader = True
     colNames = [] #typedefs.keys()
     colTypes = []
