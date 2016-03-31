@@ -26,7 +26,8 @@ def generateTaskRunParameters(componentId, credentials):
             "files": [
                 {
                     "filter_by_run_id": True,
-                    "tags": ['tde']
+                    "tags": ['tde'],
+                    "limit": 100
                 }
             ]
         }
