@@ -21,24 +21,36 @@ POST  `https://syrup.keboola.com/docker/tde-exporter/run`
 
 request body(config JSON):
 
-`
+```
 {
-    "configData": {
-        "storage": {
-            "input": {
-                "tables": [
-                    {  "source": "in.c-ex-dummy.dummy" }
-                ]
-            }
-        },
-          "parameters":{
-           "tags":["sometag"],
-           "typedefs":{
-            "in.c-ex-dummy.dummy":{
-                   "id":{"type":"number"},
-                            "col1": {"type":"string"}
-        }}}}}
-`
+  "configData": {
+    "storage": {
+      "input": {
+        "tables": [
+          {
+            "source": "in.c-ex-dummy.dummy"
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "tags": [
+        "sometag"
+      ],
+      "typedefs": {
+        "in.c-ex-dummy.dummy": {
+          "id": {
+            "type": "number"
+          },
+          "col1": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+```
 ## Input tables:
 Specified in request body in `configData:storage:input:tables` as array of `{"source":<tableid>}`. It can be customized(e.g. only specific columns or values) as described in [Keboola Docker Input Mapping](https://github.com/keboola/docker-bundle/blob/master/ENVIRONMENT.md#input-mapping)
 ## Parameters:
