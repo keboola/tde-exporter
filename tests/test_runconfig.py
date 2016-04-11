@@ -9,7 +9,16 @@ def test_answer():
 def tags():
     t = {'tags':['1','2']}
     return t
+def bigFileName(charsCount):
+    return 'a'*charsCount
 
+def invalidCustomNames(tableId, customName):
+    return {'tables':
+            {tableId: {
+                'tdename': customName
+            }
+        }
+    }
 validColumnTypes = ['boolean', 'number', 'decimal', 'date', 'datetime', 'string']
 def typedefs(sourceName):
     #generate all valid types with the same column name as the type
@@ -24,6 +33,14 @@ def tagsAndTypes(sourceName):
     a = tags().copy()
     a.update(typedefs(sourceName))
     return a
+
+def tables(tableNames):
+    result = {tables: {}}
+    t = {}
+    for name in tableNames:
+        t[name]['']
+
+    return
 
 def columnConfig(columnDefinition):
     params = {'typedefs':
@@ -52,7 +69,14 @@ def test_validDateFormat(validDateFormat):
 
 
 ## TEST INVALID CONFIG, SHOULD FAIL
-@pytest.fixture(params=[typedefs('test'), tagsAndTypes('test')])
+@pytest.fixture(params=[
+    typedefs('test'),
+    tagsAndTypes('test'),
+    invalidCustomNames('blabla', 'ads/asd'),
+    invalidCustomNames('blabla', 'ads\\asd'),
+    invalidCustomNames('blabla', bigFileName(150)),
+    invalidCustomNames('blabla', bigFileName(200))
+])
 def invalidConfig(request):
     config = { 'storage' :
         { 'input':{
@@ -105,3 +129,25 @@ def validConfig(request):
 
 def test_configOK(validConfig):
     assert src.checkConfig(validConfig) == True
+
+
+def test_getOutputFileName():
+    tableId = 'blabla'
+    config = { 'storage' :
+        { 'input':{
+            'tables': [{'source': tableId}]
+        }
+      },
+    }
+    assert src.getOutputFileName(config, tableId) == tableId + '.tde'
+    customName = 'custom.tde'
+    params = {'tables': {
+        tableId:
+        {'tdename': customName}
+    }
+    }
+    config['parameters'] = params
+    assert src.getOutputFileName(config, tableId) == customName
+
+
+# def test_validCustomNames(validCustomName)

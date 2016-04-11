@@ -103,3 +103,38 @@ def test_convertOK(tmpdir):
     src.convert2tde(inFilePath, outFilePath, typedefs)
     outSize = os.path.getsize(outFilePath)
     assert outSize > 0
+
+@pytest.fixture(params=['blabla','me dze  ra', '123 ddd', '-asdasd-1', 'aasd 12 -', '_','.asdasd', 'bla 1 2 _ -', '-', 'asd&sa', '&','()', '*d', '*', '#', '[]'])
+def validCustomName(request):
+    return request.param
+
+
+def test_convertCustomNameOK(tmpdir, validCustomName):
+    print "TMP DIR ", tmpdir
+    inDataHeader = ['boolean']
+    typedefs = {c: {'type':c} for c in inDataHeader} #map(lambda c: {'type':c}, inDataHeader)
+    inDataGeneratorMap = {
+        'boolean':  lambda: random.choice(['true', 'false']),
+        'string':   lambda: 'test string'
+    }
+    inFilePath = tmpdir.mkdir("in").join("intable.csv")
+    inFilePath = str(inFilePath.realpath())
+    outDir = tmpdir.mkdir("out")
+    outFilePath = outDir.join(validCustomName + '.tde')
+    outFilePath = str(outFilePath.realpath())
+
+    inFileData = []
+    for rowIdx in range(0, 5):
+        row = []
+        for column in inDataHeader:
+            row.append(inDataGeneratorMap[column]())
+        inFileData.append(row)
+
+    with open(inFilePath, 'w') as inFile:
+        csvFile = csv.writer(inFile, delimiter=',')
+        csvFile.writerows([inDataHeader])
+        csvFile.writerows(inFileData)
+
+    src.convert2tde(inFilePath, outFilePath, typedefs)
+    outSize = os.path.getsize(outFilePath)
+    assert outSize > 0
