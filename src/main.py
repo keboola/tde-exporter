@@ -13,10 +13,13 @@ from logger import debug
 import itertools
 import uploadTasks
 import Exceptions
+import re
 
 csvDelimiter = ','
 csvQuoteChar = '"'
 defaultTags = ['table-export', 'tde']
+maxFileNameLen = 150
+customFileNameRegex = "^[a-zA-Z_0-9\- \(\)\.]+$"
 
 def handleApplicationError():
     """
@@ -60,6 +63,18 @@ def getParameters(config, path):
         return reduce(lambda d, k: d[k], ['parameters'] + path, config)
     except:
         return None
+
+def getOutputFileName(config, tableId):
+    """
+    returns (custom or default) name of the output file name for @tableId
+    """
+    tdeName = getParameters(config, ['tables', tableId, 'tdename'])
+    defaultName = tableId + '.tde'
+    name = tdeName or defaultName
+    if name.endswith('.tde'):
+        return name
+    else:
+        return name + '.tde'
 
 def getParentRunIdTag():
     """
@@ -131,6 +146,17 @@ def checkConfig(config):
         print 'No input tables specified.'
         return False
     sources = map(lambda t: t['source'], inTables)
+
+    for tableId in sources:
+        tdeName = getOutputFileName(config, tableId)
+        msg = checkOutputName(tdeName)
+        if msg != None:
+            debug('Output tde file name for ' + tableId + ' is invalid:', msg)
+            return False
+    #customNames = getParameters(config, ['tables'])
+    # customNamesKeys = customNames.keys()
+
+
     #if no typedefs specified we leave with true
     typedefs = getParameters(config, ['typedefs'])
     if not typedefs:
@@ -171,6 +197,15 @@ def uploadFiles(sourceFolder, token, runId):
     debug('Sending files to Keboola storage finished')
     return True
 
+def checkOutputName(name):
+    if len(name) > maxFileNameLen:
+        return 'Filename too long, max 150 characters are allowed'
+    if re.match(customFileNameRegex ,name) == None:
+        return name + ': Invalid string, only alphanumeric characters, space, . ()-_ are allowed'
+    return None
+
+
+
 
 def main(args):
     """
@@ -195,7 +230,7 @@ def main(args):
         if 'destination' in table:
             fileName = table['destination']
         inFilePath = inPathPrefix + fileName
-        outFileName = table['source'] + '.tde'
+        outFileName = getOutputFileName(config, table['source'])
         outFilePath = outPathPrefix + outFileName
         typedefs = getParameters(config, ['typedefs', table['source']])
         convert2tde(inFilePath, outFilePath, typedefs or {})
