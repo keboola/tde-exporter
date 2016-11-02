@@ -205,7 +205,15 @@ def checkOutputName(name):
     return None
 
 
-
+def emptydir(path):
+    """
+    deletes the content of the directory given path by @top param
+    """
+    args = ["rm", path, "-rf"]
+    code = subprocess.call(args)
+    if code != 0:
+        raise Exception('Error removing files from '  + path)
+    return True
 
 def main(args):
     """
@@ -240,6 +248,7 @@ def main(args):
     try:
         uploadFiles(outPathPrefix, token, runId)
         uploadTasks.runUploadTasks(config, token, runId)
+        emptydir(outPathPrefix)
     except Exceptions.UploadException as e:
         print e
         sys.exit(1)
