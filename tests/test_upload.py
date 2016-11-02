@@ -1,5 +1,6 @@
 import pytest
 from src.main import uploadFiles
+from src.main import emptydir
 from src.uploadTasks import runUploadTasks
 from src.kbc import *
 from src import Exceptions
@@ -62,6 +63,10 @@ def test_phpUploadEmptyFiles(tmpdir):
 
     assert uploadFiles(sourceFolder, 'asdasd', 'asd') == True
     assert uploadFiles(sourceFolder, 'asdasd', None) == True
+    os.mknod(sourceFolder + "/newfile.tde")
+    os.mknod(sourceFolder + "/newfile.manifest")
+    assert emptydir(sourceFolder) == True
+    assert os.path.exists(sourceFolder) == False
 
     # with pytest.raises(Exception) as exc:
     #     uploadFiles('asdasd', 'asd')
