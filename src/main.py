@@ -14,6 +14,7 @@ import itertools
 import uploadTasks
 import Exceptions
 import re
+import pipes
 
 csvDelimiter = ','
 csvQuoteChar = '"'
@@ -209,8 +210,7 @@ def emptydir(path):
     """
     deletes the content of the directory given path by @top param
     """
-    args = ["rm", path, "-rf"]
-    code = subprocess.call(args)
+    code = subprocess.call("rm %s* -rf" % tuple(map(pipes.quote, [path])), shell=True)
     if code != 0:
         raise Exception('Error removing files from '  + path)
     return True
