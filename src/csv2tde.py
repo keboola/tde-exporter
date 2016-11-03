@@ -6,9 +6,26 @@ import locale
 import array
 import re
 import ConfigParser
+import os
 
 # Import Tableau module
 from dataextract import *
+TDE_RESET_THRESHOLD = 100000
+colNames = [] #typedefs.keys()
+colTypes = []
+colDefs = [] #contains definition object for each column
+def getColumnDefinition(colName, typedefs):
+    if colName in typedefs:
+        return typedefs[colName]
+    else:
+        return {'type': Type.UNICODE_STRING}
+
+def getColumnType(colName, typedefs):
+    if colName in typedefs:
+        return schemaIniTypeMap[typedefs[colName]['type'].lower()]
+    else:
+        return Type.UNICODE_STRING
+
 
 # Define type maps
 schemaIniTypeMap = {
@@ -45,124 +62,88 @@ fieldSetterMap = {
         Type.DATE:           lambda row, colNo, value, colDef: setDate(row, colNo, value, colDef),
         Type.DATETIME:       lambda row, colNo, value, colDef: setDateTime( row, colNo, value, colDef )
 }
-def convert(csvReader, tdeFile, typedefs) :
-    # Start stopwatch
-    #startTime = time.clock()
-    #csvFile = sys.argv[1];
+# Define createTable function
+def createTable(line, extract, typedefs, isFirstCreation):
+    if line:
+        # append with empty columns so we have the same number of columns as the header row
+        while len(colNames) < len(line):
+            colDefs.append(None)
+            colNames.append(None)
+            colTypes.append(Type.UNICODE_STRING)
+        # write in the column names from the header row
+        colNo = 0
+        for colName in line:
+            colNames[colNo] = colName
+            #print "coltype for ", colName, 'is ', getColumnType(colName)
+            colTypes[colNo] = getColumnType(colName, typedefs)
+            colDefs[colNo] = getColumnDefinition(colName, typedefs)
+            colNo += 1
 
+    # for any unnamed column, provide a default
+    for i in range(0, len(colNames)):
+        if colNames[i] is None:
+            colNames[i] = 'F' + str(i + 1)
+
+    # create the schema and the table from it
+    tableDef = TableDefinition()
+    for i in range(0, len(colNames)):
+        tableDef.addColumn( colNames[i], colTypes[i] )
+    tableName = "Extract"
+    table = None
+    if extract.hasTable(tableName) and not isFirstCreation:
+            table = extract.openTable(tableName)
+    else:
+            table = extract.addTable( tableName, tableDef )
+    return table, tableDef
+
+def convert(csvReader, tdeFile, typedefs) :
     hasHeader = True
+    global colNames
+    global colTypes
+    global colDefs
+
     colNames = [] #typedefs.keys()
     colTypes = []
     colDefs = [] #contains definition object for each column
 
     locale.setlocale(locale.LC_ALL, '')
-    def getColumnDefinition(colName):
-        if colName in typedefs:
-            return typedefs[colName]
-        else:
-            return {'type': Type.UNICODE_STRING}
-
-    def getColumnType(colName):
-        if colName in typedefs:
-            return schemaIniTypeMap[typedefs[colName]['type'].lower()]
-        else:
-            return Type.UNICODE_STRING
-
-
-    # Open CSV file
-    #csvReader = csv.reader(open(csvFile, 'rb'), delimiter=',', quotechar='"')
-
-    # Create TDE output
-    #tdeFile = csvFile.split('.')[0] + ".tde";
     print "Creating extract:", tdeFile
-    with Extract(tdeFile) as extract:
-        table = None  # set by createTable
-        tableDef = None
+    # Read the table
+    rowNo = 0
+    csvHeader = None
+    extract = Extract(tdeFile)
+    table = None  # set by createTable
+    tableDef = None
 
-        # Define createTable function
-        def createTable(line):
-            if line:
-                # append with empty columns so we have the same number of columns as the header row
-                while len(colNames) < len(line):
-                    colDefs.append(None)
-                    colNames.append(None)
-                    colTypes.append(Type.UNICODE_STRING)
-                # write in the column names from the header row
-                colNo = 0
-                for colName in line:
-                    colNames[colNo] = colName
-                    #print "coltype for ", colName, 'is ', getColumnType(colName)
-                    colTypes[colNo] = getColumnType(colName)
-                    colDefs[colNo] = getColumnDefinition(colName)
+    for line in csvReader:
+        # Create the table upon first row (which may be a header)
+        if rowNo == 0:
+            csvHeader = line
+            table, tableDef = createTable( csvHeader if hasHeader else None , extract, typedefs, True)
+            if hasHeader:
+                rowNo +=1
+                continue
+        # We have a table, now write a row of values
+        row = Row(tableDef)
+        colNo = 0
+        for field in line:
+            if( colTypes[colNo] != Type.UNICODE_STRING and field == "" ) :
+                row.setNull( colNo )
+            else :
+                fieldSetterMap[colTypes[colNo]](row, colNo, field, colDefs[colNo]);
+            colNo += 1
 
+        table.insert(row)
 
-                    colNo += 1
+        # Output progress line
+        rowNo += 1
+        if rowNo % TDE_RESET_THRESHOLD == 0:
+            extract.close()
+            extract = Extract(tdeFile)
+            table, tableDef = createTable( csvHeader if hasHeader else None , extract, typedefs, False)
+            print locale.format("%d", rowNo, grouping=True), "rows inserted",
+    # END OF FOR CYCLE
 
-            # for any unnamed column, provide a default
-            for i in range(0, len(colNames)):
-                if colNames[i] is None:
-                    colNames[i] = 'F' + str(i + 1)
-
-            # create the schema and the table from it
-            tableDef = TableDefinition()
-            for i in range(0, len(colNames)):
-                tableDef.addColumn( colNames[i], colTypes[i] )
-            table = extract.addTable( "Extract", tableDef )
-            return table, tableDef
-
-        # Read the table
-        rowNo = 0
-        for line in csvReader:
-
-            # Create the table upon first row (which may be a header)
-            if table is None:
-                table, tableDef = createTable( line if hasHeader else None )
-                if hasHeader:
-                    continue
-
-            # We have a table, now write a row of values
-            row = Row(tableDef)
-            colNo = 0
-            for field in line:
-                if( colTypes[colNo] != Type.UNICODE_STRING and field == "" ) :
-                    row.setNull( colNo )
-                else :
-                    fieldSetterMap[colTypes[colNo]](row, colNo, field, colDefs[colNo]);
-                colNo += 1
-            table.insert(row)
-
-            # Output progress line
-            rowNo += 1
-            if rowNo % 100000 == 0:
-                print locale.format("%d", rowNo, grouping=True), "rows inserted",
-
-
-# Output elapsed time
-#print "Elapsed:", locale.format("%.2f", time.clock() - startTime), "seconds"
-
-
-
-# colParser = re.compile(r'(col)(\d+)', re.IGNORECASE)
-# schemaIni = ConfigParser.ConfigParser()
-# schemaIni.read("schema.ini")
-# for item in schemaIni.items(csvFile):
-#     name = item[0]
-#     value = item[1]
-#     if name == "colnameheader":
-#         hasHeader = value == "True";
-#     m = colParser.match(name)
-#     if not m:
-#         continue
-#     colName = m.groups()[0]
-#     colNo = int(m.groups()[1]) - 1;
-#     parts = value.split(' ')
-#     name = parts[0]
-#     try:
-#         type = schemaIniTypeMap[parts[1]]
-#     except KeyError:
-#         type = Type.UNICODE_STRING
-#     while colNo >= len(colNames):
-#         colNames.append(None)
-#         colTypes.append(Type.UNICODE_STRING)
-#     colNames[colNo] = name
-#     colTypes[colNo] = type
+    # close the extract if we didnt reach the closing row
+    if rowNo % TDE_RESET_THRESHOLD != 0:
+        extract.close()
