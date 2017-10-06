@@ -4,7 +4,10 @@ from kbc import runTask
 componentIdMap = {
     'tableauServer': 'wr-tableau-server',
     'dropbox': 'wr-dropbox',
-    'gdrive': 'wr-google-drive'
+    'gdrive': 'wr-google-drive',
+    'keboola.wr-dropbox-v2': 'keboola.wr-dropbox-v2',
+    'keboola.wr-google-drive': 'keboola.wr-google-drive'
+
 }
 
 def getParameters(config, path):
@@ -34,12 +37,28 @@ def generateTaskRunParameters(componentId, credentials):
     }
 
     paramsMap = {
-        'wr-tableau-server':
+      'keboola.wr-google-drive':
+        {
+          'configData':
+            {
+              'authorization': {'oauth_api': {'id': credentials}},
+              'storage': storage
+            }
+      },
+      'keboola.wr-dropbox-v2':
+        {
+          'configData':
+            {
+              'authorization': {'oauth_api': {'id': credentials}},
+              'storage': storage
+            }
+      },
+      'wr-tableau-server':
         {
           'configData':
             {
               'storage': storage,
-                'parameters': credentials
+              'parameters': credentials
             }
       },
       'wr-dropbox':
@@ -82,7 +101,7 @@ def runUploadTasks(config, token, runId):
     that takes all files filtered by parent job runId
     """
     components = getParameters(config, ['uploadTasks'])
-    if (not components) or components == None:
+    if (not components) or components is None:
         return
     # if not isinstance(components, list):
     #     raise UploadException(component + ' not found')
