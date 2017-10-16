@@ -41,15 +41,16 @@ def generateTaskRunParameters(componentId, credentials):
         {
           'configData':
             {
-              'authorization': {'oauth_api': {'id': credentials}},
-              'storage': storage
+              'authorization': {'oauth_api': {'id': credentials.get('id')}},
+              'storage': storage,
+              'parameters': {'files': {'folder': credentials.get('folder')}}
             }
       },
       'keboola.wr-dropbox-v2':
         {
           'configData':
             {
-              'authorization': {'oauth_api': {'id': credentials}},
+              'authorization': {'oauth_api': {'id': credentials.get('id')}},
               'storage': storage
             }
       },
