@@ -51,7 +51,8 @@ def generateTaskRunParameters(componentId, credentials):
           'configData':
             {
               'authorization': {'oauth_api': {'id': credentials.get('id')}},
-              'storage': storage
+              'storage': storage,
+              'parameters': {'mode': 'rewrite'}
             }
       },
       'wr-tableau-server':
