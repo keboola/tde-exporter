@@ -1,4 +1,4 @@
-FROM php:5.6
+FROM php:7.1
 
 # setup the python environment
 WORKDIR /tmp
