@@ -35,4 +35,4 @@ WORKDIR /home
 #RUN PYTHONPATH=. py.test
 #remove the tests results
 #RUN rm -rf /tmp/pytest-of-root/
-ENTRYPOINT python -u ./src/main.py --data=/data
+CMD python -u ./src/main.py --data=/data
