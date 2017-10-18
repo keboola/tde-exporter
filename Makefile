@@ -12,7 +12,9 @@ pytest:
 	docker-compose run --rm app pytest
 functest: cleantestdatadir
 	docker-compose run --rm -v $(TESTDATADIR):/data app
-testall: pytest functest
+phptests:
+	docker-compose run --rm app ./php/vendor/bin/phpunit -c ./php/phpunit.xml.dist
+testall: pytest phptests functest
 
 ##cleaning
 rmi:

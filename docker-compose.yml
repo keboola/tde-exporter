@@ -8,6 +8,7 @@ services:
     environment:
       - PYTHONPATH=.
       - KBC_TOKEN
+      - STORAGE_API_TOKEN
   dev:
     build: .
     image: keboola/tde-exporter
@@ -22,4 +23,5 @@ services:
     environment:
       - PYTHONPATH=.
       - KBC_TOKEN
+      - STORAGE_API_TOKEN
 
