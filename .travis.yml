@@ -1,11 +1,18 @@
 sudo: required
-
-language: php
-php:
-  - '5.6'
-
-install:
-  - composer install --no-scripts -d ./php
-
+language: bash
+services:
+  - docker
+before_script:
+  - docker -v
+  - docker-compose -v
+  - docker-compose build app
 script:
-  - ./php/vendor/bin/phpunit -c ./php/phpunit.xml.dist
+  - make testall
+after_success:
+  - docker images
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: ./deploy.sh
+  on:
+    tags: true
