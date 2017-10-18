@@ -1,4 +1,4 @@
-/.DS_Store
+*.DS_Store
 /docker-ignored/
 /src/csv2tde.pyc
 /sampleconfig/
@@ -11,3 +11,6 @@ php/composer.phar
 /tests/.cache/
 /php/.tern-port
 /src/.cache/
+/.env
+/.vscode/tags
+/ignored/*

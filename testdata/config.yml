@@ -1,0 +1,31 @@
+---
+parameters:
+  keboola.wr-dropbox-v2:
+    id: tde-324856164
+  stageUploadTask: keboola.wr-dropbox-v2
+  tables:
+    in.c-ex-dummy.dummy:
+      tdename: in.c_ex_dummy.dummy.tde
+  typedefs:
+    in.c-ex-dummy.dummy:
+      col1:
+        format:
+        type: string
+      col2:
+        format:
+        type: string
+      col3:
+        format:
+        type: string
+      id:
+        format:
+        type: string
+storage:
+  input:
+    tables:
+    - columns:
+      - id
+      - col1
+      - col2
+      - col3
+      source: in.c-ex-dummy.dummy
