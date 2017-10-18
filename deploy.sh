@@ -10,4 +10,4 @@ docker push $REPOSITORY:$TRAVIS_TAG
 docker push $REPOSITORY:latest
 
 ## update app in Developer Portal
-#docker run --rm -e KBC_DEVELOPERPORTAL_USERNAME=$KBC_DEVELOPERPORTAL_USERNAME -e KBC_DEVELOPERPORTAL_PASSWORD=$KBC_DEVELOPERPORTAL_PASSWORD quay.io/keboola/developer-portal-cli-v2:latest update-app-repository keboola tde-exporter $TRAVIS_TAG
+docker run --rm -e KBC_DEVELOPERPORTAL_USERNAME=$KBC_DEVELOPERPORTAL_USERNAME -e KBC_DEVELOPERPORTAL_PASSWORD=$KBC_DEVELOPERPORTAL_PASSWORD quay.io/keboola/developer-portal-cli-v2:latest update-app-repository keboola tde-exporter $TRAVIS_TAG
