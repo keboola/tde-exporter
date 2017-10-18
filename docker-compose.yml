@@ -1,0 +1,25 @@
+version: "2"
+services:
+  app:
+    build: .
+    image: keboola/tde-exporter
+    stdin_open: true
+    tty: true
+    environment:
+      - PYTHONPATH=.
+      - KBC_TOKEN
+  dev:
+    build: .
+    image: keboola/tde-exporter
+    tty: true
+    stdin_open: true
+    command: bash
+    volumes:
+      - ./src:/home/src
+      - ./php:/home/php
+      - ./tests:/home/tests
+      - ./data:/data
+    environment:
+      - PYTHONPATH=.
+      - KBC_TOKEN
+
