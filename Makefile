@@ -18,11 +18,11 @@ testall: pytest phptests functest
 
 ##cleaning
 rmi:
-	docker rmi -f  $$(docker images -q -f "dangling=true")
+	-docker rmi -f  $$(docker images -q -f "dangling=true")
 rm:
-	docker rm $$(docker ps -q -f 'status=exited')
+	-docker rm $$(docker ps -q -f 'status=exited')
 clean:
-	docker rmi -f keboola/tde-exporter
+	-docker rmi -f keboola/tde-exporter
 cleandatatdir:
 	-sudo rm -rf $(DATADIR)/out
 cleantestdatadir:
