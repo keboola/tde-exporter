@@ -5,10 +5,11 @@ runs and polls kbc components jobs
 import httplib2 # pip install httplib2
 import json
 import time
+import os
 import Exceptions
 from logger import debug
 
-connectionIndexUrl = 'https://connection.keboola.com/v2/storage'
+connectionIndexUrl = os.environ['KBC_URL'] + '/v2/storage'
 http = httplib2.Http()
 
 def parseResponse(response):

@@ -8,6 +8,7 @@ services:
     environment:
       - PYTHONPATH=.
       - KBC_TOKEN
+      - KBC_URL=https://connection.keboola.com
       - STORAGE_API_TOKEN
   dev:
     build: .
