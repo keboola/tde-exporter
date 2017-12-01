@@ -51,6 +51,7 @@ if (count($argv) > 3) {
 
 $sapiClient = new Client([
     'token' => $token,
+    'url' => getenv('KBC_URL'),
 ]);
 
 

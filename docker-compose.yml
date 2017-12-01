@@ -25,4 +25,5 @@ services:
       - PYTHONPATH=.
       - KBC_TOKEN
       - STORAGE_API_TOKEN
+      - KBC_URL=https://connection.keboola.com
 
