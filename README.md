@@ -1,4 +1,8 @@
-#Description
+# TDE Exporter
+
+[![Build Status](https://travis-ci.org/keboola/tde-exporter.svg?branch=master)](https://travis-ci.org/keboola/tde-exporter)
+
+## Description
 
 TDE-exporter exports tables from KBC Storage into TDE file format([Tableau Data Extract](http://www.tableau.com/about/blog/2014/7/understanding-tableau-data-extracts-part1)).
 
