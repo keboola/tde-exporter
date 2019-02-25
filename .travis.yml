@@ -16,3 +16,8 @@ deploy:
   script: ./deploy.sh
   on:
     tags: true
+
+notifications:
+  email: false
+  slack:
+    secure: dwbmsmYVbwKfq/5LK1WMR8acG6oHeXwDC9KZPQYpWRrRSIDUSEdWmR/xumyNfC8//PadKVsWrchQFtIowht1tluxygQc/0D8hr+aKxv/u/W6YMDjw5tXpA3HmO+/yfXDfKMkBZmzHpa0wjYhsAIsBwjfGgFGiZmxKvZuN7+rK/DJyCeqUNJkMfPVQrGVu16e59J1pWYxbSNB9A7vO+hmvjpM2/lpmn8wuJDnZUZqF7Aipun573Jzk+t/CaYj+s2rTMFDqS/nvoYYE5gh7t2C1EY6OaC067nHMerAKwh2giLZ5FzKkeg97cB/dQ129+COrmO6oBqJoeYf4GjL4K6QC8pG1h0D2KZktR3zmQ1LR3jaZ533Vp7HcLqEjSmYxCxnhjiqaQYHEUB0WeE26oL+Vvapb2p+38B8w0/ES9Q1+yXubc6nSZagVbZUS8zoAizVmfqDTK0+zz8fmByGHL5VJgetHt5R9DRBjvXL87BuoYkR5F4ce4mNmX9dLJ0S0lEpMaNN8SdRsYqTtFDbuteP+MsrbzSdjpwqoDd6y3WQDkWsiKWIO4aVzct/Dg7gxeaGwV+0Jr3IbJwHB/sboz6UVvtqr6VZIBejhWGICVepBaDXXWqqUX4Qoqj1cbEGj53JzT5MQZp0EK/5WFFTEzqgy1EljINXDnQUlSaiLbwbdQA=
