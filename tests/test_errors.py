@@ -65,18 +65,16 @@ def test_emptyoutput(tmpdir):
     src.convert2tde(inFilePath, outFilePath, {})
     assert file_exists(outFilePath)
 
-
 # should raise TableauExcpetion by exporting to the same file twice,
 # assert that error code is 1
-# this test produces Segmentation fault when run, couldnt debug it, so for now disabling it
-# def test_tableauException(tmpdir):
-#     header = ["tableau"]
-#     data = [["1"]]
-#     inFilePath, outFilePath = createcsvfile('tableau.csv', tmpdir, header, data)
-#     with pytest.raises(SystemExit) as exc:
-#         src.convert2tde(inFilePath, outFilePath, {})
-#         src.convert2tde(inFilePath, outFilePath, {})
-#     assert exc.value.code == 1
+def test_tableauException(tmpdir):
+    header = ["tableau"]
+    data = [["1"]]
+    inFilePath, outFilePath = createcsvfile('tableau.csv', tmpdir, header, data)
+    with pytest.raises(SystemExit) as exc:
+        src.convert2tde(inFilePath, outFilePath, {})
+        src.convert2tde(inFilePath, outFilePath, {})
+    assert exc.value.code == 1
 
 
 

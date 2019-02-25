@@ -42,7 +42,6 @@ class UploaderTest extends \PHPUnit_Framework_TestCase
         // Delete file uploads
         $options = new ListFilesOptions();
         $options->setTags(array("tde-exporter-php-test"));
-        sleep(1);
         $files = $this->client->listFiles($options);
         foreach ($files as $file) {
             $this->client->deleteFile($file["id"]);
@@ -105,7 +104,6 @@ class UploaderTest extends \PHPUnit_Framework_TestCase
         $writer->uploadFiles($root . "/upload", $configs);
         $options = new ListFilesOptions();
         $options->setTags(array("tde-exporter-php-test"));
-        sleep(1);
         $files = $this->client->listFiles($options);
         $this->assertCount(3, $files);
         $file1 = $file2 = $file3 = null;
@@ -149,7 +147,6 @@ class UploaderTest extends \PHPUnit_Framework_TestCase
         $writer->uploadFiles($root . "/upload", $configs);
         $options = new ListFilesOptions();
         $options->setTags(array("tde-exporter-php-test"));
-        sleep(1);
         $files = $this->client->listFiles($options);
         $this->assertCount(1, $files);
         $file1 = null;
@@ -182,7 +179,6 @@ class UploaderTest extends \PHPUnit_Framework_TestCase
         $writer->uploadFiles($root . "/upload", $configs);
         $options = new ListFilesOptions();
         $options->setTags(array("tde-exporter-php-test"));
-        sleep(1);
         $files = $this->client->listFiles($options);
         $this->assertCount(1, $files);
         $file1 = null;
