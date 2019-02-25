@@ -41,7 +41,7 @@ def generateTaskRunParameters(componentId, credentials):
         {
           'configData':
             {
-              'authorization': {'oauth_api': credentials},
+              'authorization': {'oauth_api': {'id': credentials.get('id')}},
               'storage': storage,
               'parameters': {'files': {'folder': credentials.get('folder')}}
             }
@@ -50,7 +50,7 @@ def generateTaskRunParameters(componentId, credentials):
         {
           'configData':
             {
-              'authorization': {'oauth_api': credentials},
+              'authorization': {'oauth_api': {'id': credentials.get('id')}},
               'storage': storage,
               'parameters': {'mode': 'rewrite'}
             }
