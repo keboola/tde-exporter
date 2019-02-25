@@ -1,5 +1,6 @@
 from Exceptions import UploadException
 from kbc import runTask
+import copy
 
 componentIdMap = {
     'tableauServer': 'wr-tableau-server',
@@ -36,12 +37,16 @@ def generateTaskRunParameters(componentId, credentials):
         }
     }
 
+    credentialsOnly = copy.deepcopy(credentials)
+    credentialsOnly.pop('folder', None)
+    credentialsOnly.pop('targetFolder', None)
+
     paramsMap = {
       'keboola.wr-google-drive':
         {
           'configData':
             {
-              'authorization': {'oauth_api': {'id': credentials.get('id')}},
+              'authorization': {'oauth_api': credentialsOnly},
               'storage': storage,
               'parameters': {'files': {'folder': credentials.get('folder')}}
             }
@@ -50,7 +55,7 @@ def generateTaskRunParameters(componentId, credentials):
         {
           'configData':
             {
-              'authorization': {'oauth_api': {'id': credentials.get('id')}},
+              'authorization': {'oauth_api': credentialsOnly},
               'storage': storage,
               'parameters': {'mode': 'rewrite'}
             }
