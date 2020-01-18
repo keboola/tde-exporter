@@ -54,8 +54,9 @@ def getRequest(url, token):
                 )
                 print(message)
                 continue
-            message = 'Error %s' % (
-                str(err)
+            message = 'Error with %s retrying: %s' % (
+               upload_retries,
+               str(err)
             )
             raise Exception(message)
 
@@ -85,7 +86,8 @@ def postRequest(url, body, token, runId = None):
                 )
                 print(message)
                 continue
-            message = 'Error %s' % (
+            message = 'Error with %s retrying: %s' % (
+                upload_retries,
                 str(err)
             )
             raise Exception(message)

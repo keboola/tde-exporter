@@ -38,6 +38,11 @@ def test_request400Fail():
         postRequest(connectionIndexUrl, {}, '')
     assert 'User error' in str(exc)
 
+def test_retrying():
+    with pytest.raises(Exception) as exc:
+        postRequest('www.asdasd.dd', {}, '')
+    assert '5 retrying' in str(exc)
+
 def test_uploadfail(kbc_componentId):
     params = {}
     token = ''
