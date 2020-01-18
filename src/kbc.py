@@ -37,8 +37,27 @@ def getRequest(url, token):
     headers = {}
     if token != None:
         headers = {'X-StorageApi-Token': token}
-    response = http.request(url, 'GET', headers=headers)
-    return parseResponse(response)
+
+    upload_max_retries = 5
+    upload_retries = 0
+    while upload_retries < upload_max_retries:
+        upload_retries += 1
+        try:
+            response = http.request(url, 'GET', headers=headers)
+            return parseResponse(response)
+        except Exceptions.UploadException as upload_err:
+            raise Exceptions.UploadException(str(upload_err))
+        except Exception as err:
+            if upload_retries < upload_max_retries:
+                message = '%s Retrying upload' % (
+                    str(upload_retries)
+                )
+                print(message)
+                continue
+            message = 'Error %s' % (
+                str(err)
+            )
+            raise Exception(message)
 
 def postRequest(url, body, token, runId = None):
     """
@@ -50,8 +69,26 @@ def postRequest(url, body, token, runId = None):
         headers['X-KBC-RunId'] = runId
     headers['Content-Type'] = 'application/json; charset=UTF-8'
     body = json.dumps(body)
-    response = http.request(url, 'POST', headers=headers, body=body)
-    return parseResponse(response)
+    upload_max_retries = 5
+    upload_retries = 0
+    while upload_retries < upload_max_retries:
+        upload_retries += 1
+        try:
+            response = http.request(url, 'POST', headers=headers, body=body)
+            return parseResponse(response)
+        except Exceptions.UploadException as upload_err:
+            raise Exceptions.UploadException(str(upload_err))
+        except Exception as err:
+            if upload_retries < upload_max_retries:
+                message = '%s Retrying upload' % (
+                    str(upload_retries)
+                )
+                print(message)
+                continue
+            message = 'Error %s' % (
+                str(err)
+            )
+            raise Exception(message)
 
 def getComponentUri(componentId):
     """

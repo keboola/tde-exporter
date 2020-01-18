@@ -2,7 +2,7 @@ FROM php:7.1
 
 # setup the python environment
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y wget git tar python
+RUN apt-get update && apt-get install -y wget git tar python unzip
 RUN wget https://bootstrap.pypa.io/get-pip.py
 RUN python get-pip.py
 RUN pip install PyYaml
