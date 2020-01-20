@@ -27,7 +27,7 @@ def test_manifest(tmpdir, validTags, run_ids):
     outFilePath = str(tmpdir.join(outFileName).realpath())
     tags = validTags
     src.createManifest(outFilePath, outFileName, tags)
-    manifest =  yaml.load(open(outFilePath + '.manifest', 'r'))
+    manifest =  yaml.load(open(outFilePath + '.manifest', 'r'), Loader=yaml.FullLoader)
     assert manifest['is_permanent'] ==  True
     assert manifest['is_public'] ==  False
     assert manifest ['is_encrypted'] == True

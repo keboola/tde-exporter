@@ -134,7 +134,7 @@ def createManifest(outFilePath, outFileName, tags):
         yaml.dump(manifest, manifestFile)
 
 def loadConfigFile(dataDir):
-    return yaml.load(open(dataDir + '/config.yml', 'r'))
+    return yaml.load(open(dataDir + '/config.yml', 'r'), Loader=yaml.FullLoader)
 
 def checkConfig(config):
     """
