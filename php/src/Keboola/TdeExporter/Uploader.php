@@ -1,5 +1,6 @@
 <?php
 namespace Keboola\TdeExporter;
+use Keboola\StorageApi\Client;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Filesystem\Filesystem;
