@@ -60,7 +60,7 @@ class UploaderTest extends \PHPUnit_Framework_TestCase
         $fs = new Filesystem();
         $fs->mkdir($root . DIRECTORY_SEPARATOR . "upload");
         $fs->mkdir($root . DIRECTORY_SEPARATOR . "download");
-        $this->client = new Client(array("token" => STORAGE_API_TOKEN));
+        $this->client = new Client(array('url' => getenv('KBC_URL'), "token" => STORAGE_API_TOKEN));
         $this->clearBucket();
         $this->clearFileUploads();
     }
