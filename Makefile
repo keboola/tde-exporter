@@ -1,5 +1,6 @@
 DATADIR=$(PWD)/ignored/data
 TESTDATADIR=$(PWD)/testdata
+TESTDATADIR_SEG_FAIL=$(PWD)/testdata-seg-fault
 
 ## devel
 bash:
@@ -10,11 +11,19 @@ run: cleandatatdir
 ### testing
 pytest:
 	docker-compose run --rm app pytest
-functest: cleantestdatadir
+functest:
 	docker-compose run --rm -v $(TESTDATADIR):/data app
+seg-fail-test:
+	docker-compose run --rm -v $(TESTDATADIR_SEG_FAIL):/data app; \
+	if [ $$? -eq 1 ]; then \
+		echo "Expected exit code 1 -> PASS"; \
+	else \
+		echo "Expected exit code 1 -> FAIL"; \
+		exit 1; \
+	fi
 phptests:
 	docker-compose run --rm app ./php/vendor/bin/phpunit -c ./php/phpunit.xml.dist
-testall: pytest phptests functest
+testall: pytest phptests seg-fail-test functest
 
 ##cleaning
 rmi:

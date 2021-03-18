@@ -1,5 +1,9 @@
+!/**/.gitkeep
+/testdata/out
+/testdata-seg-fault/out
 .idea
 *.DS_Store
+/data
 /docker-ignored/
 /src/csv2tde.pyc
 /sampleconfig/
