@@ -3,7 +3,7 @@ FROM php:7.4
 # setup the python environment
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y wget git tar python unzip
-RUN wget https://bootstrap.pypa.io/get-pip.py
+RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
 RUN python get-pip.py
 RUN pip install PyYaml
 RUN pip install -U pytest
@@ -30,4 +30,4 @@ RUN composer install --no-interaction
 
 WORKDIR /home
 RUN du -sh *
-CMD python -u ./src/main.py --data=/data
+CMD ./src/run.sh

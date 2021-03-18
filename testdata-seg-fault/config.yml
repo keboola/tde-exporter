@@ -1,0 +1,18 @@
+---
+parameters:
+  tables:
+    in.c-ex-dummy.dummy:
+      tdename: in.c_ex_dummy.dummy.tde
+  typedefs:
+    in.c-ex-dummy.dummy:
+      col1:
+        type: string
+      col2:
+        type: date
+storage:
+  input:
+    tables:
+    - columns:
+      - col1
+      - col2
+      source: in.c-ex-dummy.dummy
