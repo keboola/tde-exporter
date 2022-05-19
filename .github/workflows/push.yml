@@ -3,7 +3,7 @@ on: [ push ]
 concurrency: ci-${{ github.ref }} # to avoid tag collisions in the ECR
 env:
   # Name of the image in the ECR
-  APP_IMAGE: keboola-component
+  APP_IMAGE: keboola/tde-exporter
 
   # Developer portal login
   KBC_DEVELOPERPORTAL_VENDOR: "keboola"
