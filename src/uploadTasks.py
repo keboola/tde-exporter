@@ -1,5 +1,7 @@
 from Exceptions import UploadException
-from kbc import runTask
+from kbc import getProjectFeatures
+from queuev1 import runTaskQueueV1
+from queuev2 import runTaskQueueV2
 import copy
 
 componentIdMap = {
@@ -72,7 +74,7 @@ def generateTaskRunParameters(componentId, credentials):
         {
           'configData':
             {
-              'storage': storage,
+                'storage': storage,
                 'parameters':
                 {
                     'mode': True, #rewrite files in destination
@@ -120,4 +122,9 @@ def runUploadTasks(config, token, runId):
         #take saved credentials object
         credentials = getParameters(config, [component])
         params = generateTaskRunParameters(componentId, credentials)
-        runTask(componentId, params, token, runId)
+
+        features = getProjectFeatures(token)
+        if "queuev2" in features:
+            runTaskQueueV2(componentId, params, token, runId)
+        else:
+            runTaskQueueV1(componentId, params, token, runId)

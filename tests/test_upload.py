@@ -3,6 +3,7 @@ from src.main import uploadFiles
 from src.main import emptydir
 from src.uploadTasks import runUploadTasks
 from src.kbc import *
+from src.queuev1 import getComponentUri, runTaskQueueV1
 from src import Exceptions
 import csv
 import random
@@ -47,20 +48,20 @@ def test_uploadfail(kbc_componentId):
     params = {}
     token = ''
     with pytest.raises(Exceptions.UploadException) as exc:
-        runTask(kbc_componentId, params, token)
+        runTaskQueueV1(kbc_componentId, params, token)
     assert 'UploadException' in str(exc)
 
 def test_uploadfailRunId(kbc_componentId):
     params = {}
     token = ''
     with pytest.raises(Exceptions.UploadException) as exc:
-        runTask(kbc_componentId, params, token, 'testrunid')
+        runTaskQueueV1(kbc_componentId, params, token, 'testrunid')
     assert 'UploadException' in str(exc)
 
 
 def test_runUnknownComponentFail():
     with pytest.raises(Exceptions.UploadException) as exc:
-        runTask('asdasd', {}, '')
+        runTaskQueueV1('asdasd', {}, '')
     assert 'Unknown component' in str(exc)
 
 def test_phpUploadEmptyFiles(tmpdir):
@@ -86,7 +87,7 @@ def test_phpUploadEmptyFiles(tmpdir):
 #     componentId = 'wr-dropbox'
 #     params = json.loads('{"configData":{"storage":{"input":{"files":[{"query":"id:147088910"}]}},"parameters":{"credentials":"tde-exporter-test","mode":true}}}')
 #     token = ''
-#     result = runTask(componentId, params, token)
+#     result = runTaskQueueV1(componentId, params, token)
 #     print result
 #     assert 1 == 1
 
