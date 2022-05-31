@@ -91,3 +91,7 @@ Data for these datatypes can be specified in format described in [strptime funct
 
 * **date** default format: `%Y-%m-%d`
 * **datetime** default format: `%Y-%m-%d %H:%M:%S` or `%Y-%m-%d %H:%M:%S.%f`
+
+## License
+
+MIT licensed, see [LICENSE](./LICENSE) file.
