@@ -1,4 +1,6 @@
 #!/bin/bash
+set -Eeuo pipefail
+
 python -u ./src/main.py --data=/data | cat
 
 # Catch segmentation fault in Python (TDE library)
