@@ -2,7 +2,7 @@
 
 python -u ./src/main.py --data=/data | cat
 
-MAIN_PY_EXIT_CODE=PIPESTATUS[0]
+MAIN_PY_EXIT_CODE="${PIPESTATUS[0]}"
 
 # Catch segmentation fault in Python (TDE library)
 if [[ $MAIN_PY_EXIT_CODE -eq 139 ]]; then
@@ -12,4 +12,4 @@ if [[ $MAIN_PY_EXIT_CODE -eq 139 ]]; then
   exit 1
 fi
 
-exit $MAIN_PY_EXIT_CODE
+exit "$MAIN_PY_EXIT_CODE"
