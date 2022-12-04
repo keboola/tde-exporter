@@ -51,6 +51,9 @@ def convert2tde(inFilePath, outFilePath, typedefs):
     except TableauException as e:
         print e
         sys.exit(1)
+    except csv.Error as e:
+        print e
+        sys.exit(1)
     except:
         handleApplicationError()
 
