@@ -38,6 +38,11 @@ def convert2tde(inFilePath, outFilePath, typedefs):
     """
     convert file from @inFilePath to tde to @outFilePath
     """
+
+    # _csv.Error: field larger than field limit (131072)
+    # https://stackoverflow.com/questions/15063936/csv-error-field-larger-than-field-limit-131072
+    csv.field_size_limit(sys.maxint)
+
     try:
         debug( "converting" +  inFilePath)
         with open(inFilePath, 'rb') as inFile:
