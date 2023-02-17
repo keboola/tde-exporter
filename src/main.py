@@ -137,7 +137,7 @@ def createManifest(outFilePath, outFileName, tags):
     if runid:
         debug('runid tag:', runid)
         runidtag = [runid]
-    resultTags = list(set(defaultTags + tags + runidtag + getExporterRunId()))
+    resultTags = list(set(defaultTags + tags + runidtag + [getExporterRunId()]))
     manifest = {
         'is_permanent': True,
         'is_public': False,
