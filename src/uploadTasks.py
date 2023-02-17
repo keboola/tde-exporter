@@ -31,7 +31,7 @@ def generateTaskRunParameters(componentId, credentials, runId):
         "input": {
             "files": [
                 {
-                    "tags": ['tde', 'exporterRunId-' + runId],
+                    "tags": ['exporterRunId-' + runId],
                     "limit": 100
                 }
             ]
