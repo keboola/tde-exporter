@@ -22,7 +22,7 @@ def getParameters(config, path):
     except:
         return None
 
-def generateTaskRunParameters(componentId, credentials):
+def generateTaskRunParameters(componentId, credentials, runId):
     """
     return object that will be passed as params to \run api call
     should configure the component to take all uploaded files shared with current parent runId
@@ -31,8 +31,7 @@ def generateTaskRunParameters(componentId, credentials):
         "input": {
             "files": [
                 {
-                    "filter_by_run_id": True,
-                    "tags": ['tde'],
+                    "tags": ['exporterRunId-' + runId],
                     "limit": 100
                 }
             ]
@@ -121,7 +120,7 @@ def runUploadTasks(config, token, runId):
             raise UploadException(component + ' not found')
         #take saved credentials object
         credentials = getParameters(config, [component])
-        params = generateTaskRunParameters(componentId, credentials)
+        params = generateTaskRunParameters(componentId, credentials, runId)
 
         features = getProjectFeatures(token)
         if "queuev2" in features:

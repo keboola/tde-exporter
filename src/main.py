@@ -107,6 +107,15 @@ def getRunId():
     except:
         return None
 
+def getExporterRunId():
+    """
+    return environment var runId or None if not present
+    """
+    try:
+        return 'exporterRunId-' + getRunId()
+    except:
+        return None
+
 def getToken():
     """
     return environment var kbc token or None if not present
@@ -128,7 +137,7 @@ def createManifest(outFilePath, outFileName, tags):
     if runid:
         debug('runid tag:', runid)
         runidtag = [runid]
-    resultTags = list(set(defaultTags + tags + runidtag))
+    resultTags = list(set(defaultTags + tags + runidtag + [getExporterRunId()]))
     manifest = {
         'is_permanent': True,
         'is_public': False,
