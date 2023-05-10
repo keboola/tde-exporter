@@ -8,7 +8,7 @@ import time
 import os
 import Exceptions
 from logger import debug
-from urllib.parse import urljoin
+from urlparse import urljoin
 
 connectionIndexUrl = urljoin(os.environ['KBC_URL'], '/v2/storage')
 http = httplib2.Http()
