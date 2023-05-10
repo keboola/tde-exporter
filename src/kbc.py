@@ -8,8 +8,9 @@ import time
 import os
 import Exceptions
 from logger import debug
+from urlparse import urljoin
 
-connectionIndexUrl = os.environ['KBC_URL'] + '/v2/storage'
+connectionIndexUrl = urljoin(os.environ['KBC_URL'], '/v2/storage')
 http = httplib2.Http()
 
 def getProjectFeatures(token):
