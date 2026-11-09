@@ -2,6 +2,8 @@ FROM php:7.4
 
 # setup the python environment
 WORKDIR /tmp
+# php:7.4 is Debian bullseye, which is past LTS: deb.debian.org no longer serves its security pool
+RUN sed -i 's|http://deb.debian.org|http://archive.debian.org|g' /etc/apt/sources.list
 RUN apt-get update && apt-get install -y wget git tar python unzip
 RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
 RUN python get-pip.py

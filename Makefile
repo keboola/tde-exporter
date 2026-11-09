@@ -4,17 +4,17 @@ TESTDATADIR_SEG_FAIL=$(PWD)/testdata-seg-fault
 
 ## devel
 bash:
-	docker-compose run --rm -v $(DATADIR):/data dev
+	docker compose run --rm -v $(DATADIR):/data dev
 run: cleandatatdir
-	docker-compose run --rm -v $(DATADIR):/data dev
+	docker compose run --rm -v $(DATADIR):/data dev
 
 ### testing
 pytest:
-	docker-compose run --rm app pytest
+	docker compose run --rm app pytest
 functest:
-	docker-compose run --rm -v $(TESTDATADIR):/data app
+	docker compose run --rm -v $(TESTDATADIR):/data app
 seg-fail-test:
-	docker-compose run --rm -v $(TESTDATADIR_SEG_FAIL):/data app; \
+	docker compose run --rm -v $(TESTDATADIR_SEG_FAIL):/data app; \
 	if [ $$? -eq 1 ]; then \
 		echo "Expected exit code 1 -> PASS"; \
 	else \
@@ -22,7 +22,7 @@ seg-fail-test:
 		exit 1; \
 	fi
 phptests:
-	docker-compose run --rm app ./php/vendor/bin/phpunit -c ./php/phpunit.xml.dist
+	docker compose run --rm app ./php/vendor/bin/phpunit -c ./php/phpunit.xml.dist
 testall: pytest phptests seg-fail-test functest
 
 ##cleaning
