@@ -1,5 +1,6 @@
 # coding=utf-8
 import argparse
+import json
 import subprocess
 import yaml
 import csv2tde
@@ -150,8 +151,32 @@ def createManifest(outFilePath, outFileName, tags):
     with open(outFilePath + '.manifest', 'w') as manifestFile:
         yaml.dump(manifest, manifestFile)
 
+def asciiToStr(value):
+    """
+    json returns unicode everywhere, yaml returns str for ASCII scalars; config tags go through
+    yaml.dump into the manifest, which writes unicode as `!!python/unicode 'tag'` and the PHP
+    uploader then stores that literal string as the file tag
+    """
+    if isinstance(value, dict):
+        return dict((asciiToStr(k), asciiToStr(v)) for k, v in value.items())
+    if isinstance(value, list):
+        return [asciiToStr(v) for v in value]
+    if isinstance(value, unicode):
+        try:
+            return value.encode('ascii')
+        except UnicodeEncodeError:
+            return value
+    return value
+
 def loadConfigFile(dataDir):
-    return yaml.load(open(dataDir + '/config.yml', 'r'), Loader=yaml.FullLoader)
+    # The runner writes config.json or config.yml depending on `configuration_format`
+    # in the developer portal, so the image has to read both.
+    jsonPath = os.path.join(dataDir, 'config.json')
+    if os.path.exists(jsonPath):
+        with open(jsonPath, 'r') as configFile:
+            return asciiToStr(json.load(configFile))
+    with open(os.path.join(dataDir, 'config.yml'), 'r') as configFile:
+        return yaml.load(configFile, Loader=yaml.FullLoader)
 
 def checkConfig(config):
     """
